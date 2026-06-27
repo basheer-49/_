@@ -1,1323 +1,451 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WRAP OFFER - توزيع السكاكر والشوكولاته</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <style>
-        :root {
-            --primary-yellow: #FFD700;
-            --bright-yellow: #FFEB3B;
-            --dark-yellow: #FBC02D;
-            --accent-orange: #FF9800;
-            --text-dark: #2D2D2D;
-            --text-light: #666;
-            --white: #ffffff;
-            --bg-light: #FFFDE7;
-            --shadow: 0 4px 20px rgba(0,0,0,0.1);
-            --shadow-hover: 0 8px 30px rgba(0,0,0,0.15);
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Tajawal', sans-serif;
-            background: linear-gradient(135deg, #FFFDE7 0%, #FFF8E1 50%, #FFECB3 100%);
-            color: var(--text-dark);
-            overflow-x: hidden;
-            min-height: 100vh;
-        }
-        .candy-particles {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; z-index: 0; overflow: hidden;
-        }
-        .particle {
-            position: absolute; font-size: 20px; opacity: 0.12;
-            animation: float-particle linear infinite;
-        }
-        @keyframes float-particle {
-            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
-            10% { opacity: 0.12; }
-            90% { opacity: 0.12; }
-            100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
-        }
-        .header {
-            background: linear-gradient(135deg, var(--primary-yellow) 0%, var(--bright-yellow) 50%, var(--dark-yellow) 100%);
-            padding: 12px 0; position: fixed; top: 0; width: 100%; z-index: 1000;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-        }
-        .header-content {
-            max-width: 1400px; margin: 0 auto; padding: 0 20px;
-            display: flex; align-items: center; justify-content: space-between;
-        }
-        .logo-section { display: flex; align-items: center; gap: 12px; }
-        .logo-img {
-            width: 55px; height: 55px; border-radius: 50%; object-fit: cover;
-            border: 3px solid var(--white); box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-        }
-        .logo-text h1 { font-size: 1.6rem; font-weight: 900; color: var(--text-dark); text-shadow: 1px 1px 2px rgba(255,255,255,0.5); }
-        .logo-text p { font-size: 0.8rem; color: var(--text-dark); opacity: 0.8; }
-        .nav-links { display: flex; gap: 20px; align-items: center; }
-        .nav-links a {
-            color: var(--text-dark); text-decoration: none; font-weight: 700; font-size: 0.95rem;
-            transition: all 0.3s ease; padding: 7px 14px; border-radius: 25px;
-        }
-        .nav-links a:hover { background: rgba(255,255,255,0.4); transform: translateY(-2px); }
-        .cart-icon { position: relative; cursor: pointer; font-size: 1.4rem; color: var(--text-dark); transition: transform 0.3s ease; }
-        .cart-icon:hover { transform: scale(1.1); }
-        .cart-count {
-            position: absolute; top: -8px; right: -8px; background: #E53935; color: white;
-            font-size: 0.7rem; font-weight: 800; width: 22px; height: 22px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center; animation: pulse 2s infinite;
-        }
-        @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.15)} }
-        .hero {
-            margin-top: 80px; position: relative; min-height: 520px;
-            background: linear-gradient(135deg, #FFD700 0%, #FFEB3B 30%, #FFC107 70%, #FF9800 100%);
-            display: flex; align-items: center; justify-content: center; overflow: hidden;
-        }
-        .hero::before {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: url('https://images.unsplash.com/photo-1582058996836-93c47e1e9f59?w=1920&q=80') center/cover; opacity: 0.2;
-        }
-        .hero-content { position: relative; z-index: 2; text-align: center; padding: 30px 20px; }
-        .hero-logo {
-            width: 140px; height: 140px; border-radius: 50%; object-fit: cover;
-            border: 5px solid var(--white); box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-            margin-bottom: 15px; animation: float-logo 3s ease-in-out infinite;
-        }
-        @keyframes float-logo { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
-        .hero h2 { font-size: 3.2rem; font-weight: 900; color: var(--text-dark); text-shadow: 2px 2px 4px rgba(255,255,255,0.5); margin-bottom: 8px; }
-        .hero .tagline { font-size: 1.3rem; color: var(--text-dark); font-weight: 500; margin-bottom: 25px; }
-        .hero-stats { display: flex; justify-content: center; gap: 40px; margin-top: 15px; flex-wrap: wrap; }
-        .stat-item { text-align: center; background: rgba(255,255,255,0.35); padding: 12px 22px; border-radius: 15px; backdrop-filter: blur(5px); }
-        .stat-number { font-size: 1.8rem; font-weight: 900; color: var(--text-dark); }
-        .stat-label { font-size: 0.85rem; color: var(--text-dark); opacity: 0.8; }
-        .shop-btn {
-            display: inline-block; margin-top: 22px; padding: 14px 45px;
-            background: linear-gradient(135deg, #E53935, #C62828); color: white;
-            font-size: 1.2rem; font-weight: 800; border: none; border-radius: 50px;
-            cursor: pointer; text-decoration: none; transition: all 0.3s ease;
-            box-shadow: 0 5px 20px rgba(229,57,53,0.4);
-        }
-        .shop-btn:hover { transform: translateY(-3px) scale(1.05); box-shadow: 0 8px 30px rgba(229,57,53,0.5); }
-        .features { padding: 50px 20px; background: var(--white); }
-        .features-grid { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 25px; }
-        .feature-card { text-align: center; padding: 25px 18px; border-radius: 20px; background: linear-gradient(135deg, #FFFDE7, #FFF8E1); transition: all 0.3s ease; border: 2px solid transparent; }
-        .feature-card:hover { transform: translateY(-5px); border-color: var(--primary-yellow); box-shadow: var(--shadow-hover); }
-        .feature-icon { font-size: 2.5rem; margin-bottom: 12px; }
-        .feature-card h3 { font-size: 1.15rem; font-weight: 800; margin-bottom: 8px; }
-        .feature-card p { color: var(--text-light); font-size: 0.9rem; }
-        .products-section { padding: 50px 20px; max-width: 1400px; margin: 0 auto; }
-        .section-title { text-align: center; margin-bottom: 40px; }
-        .section-title h2 { font-size: 2.2rem; font-weight: 900; color: var(--text-dark); margin-bottom: 8px; }
-        .section-title p { font-size: 1rem; color: var(--text-light); }
-        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 22px; }
-        .product-card {
-            background: var(--white); border-radius: 20px; overflow: hidden;
-            box-shadow: var(--shadow); transition: all 0.3s ease; border: 2px solid transparent;
-        }
-        .product-card:hover { transform: translateY(-8px); box-shadow: var(--shadow-hover); border-color: var(--primary-yellow); }
-        .product-image {
-            width: 100%; height: 200px; object-fit: contain;
-            background: linear-gradient(135deg, #FFFDE7, #FFF8E1); padding: 12px;
-            transition: transform 0.3s ease;
-        }
-        .product-card:hover .product-image { transform: scale(1.05); }
-        .product-info { padding: 18px; }
-        .product-name { font-size: 1.1rem; font-weight: 800; color: var(--text-dark); margin-bottom: 8px; text-align: center; }
-        .product-details { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
-        .price-tag { display: flex; align-items: center; justify-content: space-between; padding: 7px 10px; background: #FFFDE7; border-radius: 10px; font-size: 0.85rem; }
-        .price-tag .label { color: var(--text-light); font-weight: 500; }
-        .price-tag .value { color: var(--accent-orange); font-weight: 800; font-size: 0.95rem; }
-        .packaging-info { text-align: center; font-size: 0.8rem; color: var(--text-light); background: #E8F5E9; padding: 5px 10px; border-radius: 8px; font-weight: 600; }
-        .quantity-control { display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 12px; }
-        .qty-btn { width: 34px; height: 34px; border-radius: 50%; border: none; background: linear-gradient(135deg, var(--primary-yellow), var(--dark-yellow)); color: var(--text-dark); font-size: 1.1rem; font-weight: 800; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; }
-        .qty-btn:hover { transform: scale(1.1); box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
-        .qty-display { font-size: 1.2rem; font-weight: 800; color: var(--text-dark); min-width: 35px; text-align: center; }
-        .add-to-cart-btn {
-            width: 100%; margin-top: 12px; padding: 10px;
-            background: linear-gradient(135deg, #43A047, #2E7D32); color: white;
-            border: none; border-radius: 12px; font-size: 0.95rem; font-weight: 800;
-            cursor: pointer; transition: all 0.3s ease;
-            display: flex; align-items: center; justify-content: center; gap: 6px;
-        }
-        .add-to-cart-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(67,160,71,0.4); }
-        .add-to-cart-btn.added { background: linear-gradient(135deg, #E53935, #C62828); }
-        .cart-sidebar {
-            position: fixed; top: 0; right: -450px; width: 450px; max-width: 100%; height: 100vh;
-            background: var(--white); z-index: 2000; box-shadow: -5px 0 30px rgba(0,0,0,0.2);
-            transition: right 0.4s ease; display: flex; flex-direction: column;
-        }
-        .cart-sidebar.open { right: 0; }
-        .cart-header { padding: 22px; background: linear-gradient(135deg, var(--primary-yellow), var(--dark-yellow)); display: flex; justify-content: space-between; align-items: center; }
-        .cart-header h3 { font-size: 1.4rem; font-weight: 900; }
-        .close-cart { background: none; border: none; font-size: 1.4rem; cursor: pointer; color: var(--text-dark); }
-        .cart-items { flex: 1; overflow-y: auto; padding: 18px; }
-        .cart-item { display: flex; gap: 12px; padding: 12px; background: #FFFDE7; border-radius: 15px; margin-bottom: 12px; align-items: center; }
-        .cart-item img { width: 55px; height: 55px; object-fit: contain; border-radius: 10px; background: white; }
-        .cart-item-info { flex: 1; }
-        .cart-item-name { font-weight: 700; font-size: 0.9rem; margin-bottom: 4px; }
-        .cart-item-price { color: var(--accent-orange); font-weight: 800; font-size: 0.85rem; }
-        .cart-item-qty { display: flex; align-items: center; gap: 8px; }
-        .cart-item-qty button { width: 26px; height: 26px; border-radius: 50%; border: none; background: var(--primary-yellow); cursor: pointer; font-weight: 800; font-size: 0.9rem; }
-        .remove-item { color: #E53935; cursor: pointer; font-size: 1.1rem; }
-        .cart-footer { padding: 22px; background: #FFFDE7; border-top: 2px solid var(--primary-yellow); }
-        .cart-total { display: flex; justify-content: space-between; font-size: 1.2rem; font-weight: 900; margin-bottom: 18px; }
-        .checkout-btn { width: 100%; padding: 14px; background: linear-gradient(135deg, #E53935, #C62828); color: white; border: none; border-radius: 15px; font-size: 1.1rem; font-weight: 800; cursor: pointer; transition: all 0.3s ease; }
-        .checkout-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 20px rgba(229,57,53,0.4); }
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1500; opacity: 0; visibility: hidden; transition: all 0.3s ease; }
-        .overlay.active { opacity: 1; visibility: visible; }
-        .checkout-modal {
-            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9);
-            width: 90%; max-width: 550px; background: var(--white); border-radius: 25px;
-            z-index: 3000; opacity: 0; visibility: hidden; transition: all 0.3s ease;
-            max-height: 90vh; overflow-y: auto;
-        }
-        .checkout-modal.open { opacity: 1; visibility: visible; transform: translate(-50%, -50%) scale(1); }
-        .checkout-header { padding: 22px; background: linear-gradient(135deg, var(--primary-yellow), var(--dark-yellow)); border-radius: 25px 25px 0 0; text-align: center; }
-        .checkout-header h2 { font-size: 1.6rem; font-weight: 900; }
-        .checkout-body { padding: 25px; }
-        .form-group { margin-bottom: 16px; }
-        .form-group label { display: block; margin-bottom: 6px; font-weight: 700; color: var(--text-dark); }
-        .form-group input, .form-group select, .form-group textarea {
-            width: 100%; padding: 12px 16px; border: 2px solid #E0E0E0; border-radius: 12px;
-            font-family: 'Tajawal', sans-serif; font-size: 0.95rem; transition: all 0.3s ease;
-        }
-        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: var(--primary-yellow); box-shadow: 0 0 0 4px rgba(255,215,0,0.2); }
-        .form-group textarea { resize: vertical; min-height: 70px; }
-        .order-summary { background: #FFFDE7; padding: 18px; border-radius: 15px; margin: 18px 0; }
-        .order-summary h4 { font-size: 1.1rem; font-weight: 800; margin-bottom: 12px; }
-        .summary-item { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px dashed #ddd; font-size: 0.9rem; }
-        .summary-total { display: flex; justify-content: space-between; padding-top: 12px; font-size: 1.2rem; font-weight: 900; color: var(--accent-orange); }
-        .submit-order-btn {
-            width: 100%; padding: 14px; background: linear-gradient(135deg, #43A047, #2E7D32); color: white;
-            border: none; border-radius: 15px; font-size: 1.1rem; font-weight: 800; cursor: pointer;
-            transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; gap: 8px;
-        }
-        .submit-order-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 20px rgba(67,160,71,0.4); }
-        .quotes-section { padding: 50px 20px; background: linear-gradient(135deg, var(--primary-yellow), var(--bright-yellow)); text-align: center; }
-        .quotes-section h2 { font-size: 1.8rem; font-weight: 900; margin-bottom: 25px; }
-        .quotes-grid { max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
-        .quote-card { background: rgba(255,255,255,0.4); padding: 22px; border-radius: 20px; backdrop-filter: blur(5px); font-size: 1rem; font-weight: 700; }
-        .quote-card i { font-size: 1.8rem; margin-bottom: 8px; display: block; }
-        .footer { background: linear-gradient(135deg, #2D2D2D, #1a1a1a); color: white; padding: 45px 20px 18px; }
-        .footer-content { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 35px; margin-bottom: 25px; }
-        .footer-section h3 { font-size: 1.2rem; font-weight: 800; margin-bottom: 12px; color: var(--primary-yellow); }
-        .footer-section p, .footer-section a { color: #ccc; text-decoration: none; line-height: 2; transition: color 0.3s ease; font-size: 0.9rem; }
-        .footer-section a:hover { color: var(--primary-yellow); }
-        .social-links { display: flex; gap: 12px; margin-top: 12px; }
-        .social-links a { width: 42px; height: 42px; border-radius: 50%; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; transition: all 0.3s ease; }
-        .social-links a:hover { background: var(--primary-yellow); color: var(--text-dark); transform: translateY(-3px); }
-        .footer-bottom { text-align: center; padding-top: 18px; border-top: 1px solid rgba(255,255,255,0.1); color: #888; font-size: 0.85rem; }
-        .fade-in { opacity: 0; transform: translateY(30px); transition: all 0.6s ease; }
-        .fade-in.visible { opacity: 1; transform: translateY(0); }
-        .toast {
-            position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%) translateY(100px);
-            background: #2E7D32; color: white; padding: 14px 28px; border-radius: 50px;
-            font-weight: 700; z-index: 4000; opacity: 0; transition: all 0.4s ease;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-        }
-        .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
-        .empty-cart-msg { text-align: center; padding: 35px; color: var(--text-light); font-size: 1rem; }
-        .empty-cart-msg i { font-size: 2.5rem; margin-bottom: 12px; display: block; color: var(--primary-yellow); }
-        @media (max-width: 768px) {
-            .hero h2 { font-size: 1.8rem; }
-            .hero .tagline { font-size: 0.95rem; }
-            .hero-stats { gap: 15px; }
-            .products-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
-            .cart-sidebar { width: 100%; }
-            .nav-links a:not(.cart-icon) { display: none; }
-            .hero-logo { width: 100px; height: 100px; }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>WRAP OFFER</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Tajawal',sans-serif;background:#fafafa;color:#222;overflow-x:hidden;padding-bottom:100px}
+.topbar{position:fixed;top:0;left:0;right:0;z-index:1000;background:#fff;border-bottom:1px solid #eee;padding:10px 16px;display:flex;align-items:center;justify-content:space-between}
+.topbar-logo{display:flex;align-items:center;gap:10px}
+.topbar-logo img{width:40px;height:40px;border-radius:50%;object-fit:cover}
+.topbar-logo span{font-weight:800;font-size:1rem;color:#222}
+.topbar-cart{position:relative;cursor:pointer;font-size:1.2rem;color:#444;width:40px;height:40px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:#f5f5f5}
+.topbar-cart .badge{position:absolute;top:-4px;right:-4px;background:#e74c3c;color:#fff;font-size:0.65rem;font-weight:800;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.hero{margin-top:60px;padding:30px 16px;text-align:center;background:#fff}
+.hero-logo{width:100px;height:100px;border-radius:50%;object-fit:cover;border:3px solid #FFD700;margin-bottom:12px}
+.hero h1{font-size:1.6rem;font-weight:800;color:#222;margin-bottom:6px}
+.hero p{font-size:0.85rem;color:#888;margin-bottom:16px}
+.hero-stats{display:flex;justify-content:center;gap:20px;flex-wrap:wrap}
+.hero-stat{text-align:center;min-width:60px}
+.hero-stat .num{font-size:1.1rem;font-weight:800;color:#e67e22}
+.hero-stat .lbl{font-size:0.7rem;color:#aaa}
+.products{padding:16px;max-width:600px;margin:0 auto}
+.products h2{font-size:1rem;font-weight:800;color:#444;margin-bottom:16px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.card{background:#fff;border-radius:14px;border:1px solid #eee;overflow:hidden}
+.card-img{width:100%;height:100px;object-fit:contain;background:#fafafa;padding:8px}
+.card-body{padding:8px}
+.card-name{font-size:0.75rem;font-weight:700;color:#333;text-align:center;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card-price{font-size:0.7rem;color:#e67e22;font-weight:700;text-align:center;margin-bottom:3px}
+.card-pack{font-size:0.6rem;color:#999;text-align:center;margin-bottom:6px}
+.qty-row{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:6px}
+.qty-btn{width:28px;height:28px;border-radius:50%;border:none;background:#FFD700;color:#222;font-size:0.9rem;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 3px rgba(0,0,0,0.15)}
+.qty-btn:active{background:#FBC02D}
+.qty-num{font-size:0.9rem;font-weight:800;color:#222;min-width:24px;text-align:center}
+.add-btn{width:100%;padding:7px;background:#27ae60;color:#fff;border:none;border-radius:8px;font-size:0.7rem;font-weight:700;cursor:pointer}
+.add-btn.added{background:#e74c3c}
+.cart-bar{position:fixed;bottom:0;left:0;right:0;z-index:2000;background:#fff;border-top:2px solid #FFD700;padding:12px 16px;display:none}
+.cart-bar.show{display:block}
+.cart-bar-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.cart-bar-info{font-size:0.85rem;font-weight:700;color:#444}
+.cart-bar-total{font-size:1rem;font-weight:800;color:#e67e22}
+.cart-bar-btns{display:flex;gap:10px}
+.cart-bar-btns button{flex:1;padding:12px;border:none;border-radius:10px;font-size:0.8rem;font-weight:700;cursor:pointer}
+.btn-edit{background:#f0f0f0;color:#444}
+.btn-send{background:#25D366;color:#fff}
+.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:2500;display:none}
+.modal-overlay.show{display:block}
+.edit-modal{position:fixed;bottom:0;left:0;right:0;background:#fff;border-radius:20px 20px 0 0;max-height:70vh;overflow-y:auto;padding:20px;z-index:2600;transform:translateY(100%);transition:transform 0.3s ease}
+.edit-modal.open{transform:translateY(0)}
+.edit-modal h3{font-size:1.1rem;font-weight:800;margin-bottom:16px}
+.edit-item{display:flex;align-items:center;gap:12px;padding:10px;background:#fafafa;border-radius:12px;margin-bottom:10px}
+.edit-item img{width:45px;height:45px;object-fit:contain;border-radius:8px}
+.edit-item-info{flex:1}
+.edit-item-info .n{font-size:0.8rem;font-weight:700}
+.edit-item-info .p{font-size:0.7rem;color:#e67e22}
+.edit-item-qty{display:flex;align-items:center;gap:8px}
+.edit-item-qty button{width:28px;height:28px;border-radius:50%;border:none;background:#FFD700;font-size:0.8rem;font-weight:800;cursor:pointer}
+.edit-item-qty span{font-size:0.85rem;font-weight:700;min-width:20px;text-align:center}
+.edit-item .del{color:#e74c3c;cursor:pointer;font-size:1rem;margin-right:4px}
+.edit-close{width:100%;margin-top:12px;padding:12px;background:#222;color:#fff;border:none;border-radius:12px;font-size:0.85rem;font-weight:700;cursor:pointer}
+.form-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);z-index:3000;display:none;align-items:center;justify-content:center;padding:16px}
+.form-overlay.show{display:flex}
+.form-box{background:#fff;width:100%;max-width:400px;border-radius:16px;padding:20px;max-height:90vh;overflow-y:auto}
+.form-box h3{font-size:1.1rem;font-weight:800;margin-bottom:16px}
+.form-group{margin-bottom:12px}
+.form-group label{display:block;font-size:0.8rem;font-weight:700;color:#555;margin-bottom:4px}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:12px;border:1px solid #ddd;border-radius:10px;font-family:'Tajawal',sans-serif;font-size:0.85rem}
+.form-group textarea{min-height:70px;resize:none}
+.form-summary{background:#fafafa;padding:12px;border-radius:10px;margin:14px 0}
+.form-summary h4{font-size:0.85rem;margin-bottom:10px}
+.form-summary .si{display:flex;justify-content:space-between;font-size:0.75rem;padding:4px 0;border-bottom:1px dashed #ddd}
+.form-summary .st{display:flex;justify-content:space-between;font-size:0.9rem;font-weight:800;color:#e67e22;padding-top:8px}
+.form-btns{display:flex;gap:10px}
+.form-btns button{flex:1;padding:12px;border:none;border-radius:10px;font-size:0.85rem;font-weight:700;cursor:pointer}
+.btn-cancel{background:#f0f0f0;color:#444}
+.btn-confirm{background:#25D366;color:#fff}
+.toast{position:fixed;bottom:110px;left:50%;transform:translateX(-50%) translateY(20px);background:#222;color:#fff;padding:12px 24px;border-radius:30px;font-size:0.8rem;font-weight:700;z-index:5000;opacity:0;transition:0.3s;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.footer{background:#222;color:#aaa;padding:24px 16px 110px;text-align:center;font-size:0.75rem}
+.footer .social{display:flex;justify-content:center;gap:16px;margin:12px 0}
+.footer .social a{color:#FFD700;font-size:1.1rem}
+.footer .copy{color:#666;margin-top:10px}
+</style>
 <base target="_blank">
 </head>
 <body>
-    <div class="candy-particles" id="particles"></div>
-    <header class="header">
-        <div class="header-content">
-            <div class="logo-section">
-                <img src="https://github.com/basheer-49/CCM/blob/main/%D9%84%D9%8A%D9%86%D9%83%D9%8A%D8%AF%20%D8%A7%D9%86%20%D8%A8%D8%A7%D9%86%D8%B1%20(1080%20x%201080%20px)%20(3).png?raw=true" alt="WRAP OFFER Logo" class="logo-img">
-                <div class="logo-text">
-                    <h1>WRAP OFFER</h1>
-                    <p>هنا تجد جميع أنواع السكاكر والشوكولاته</p>
-                </div>
-            </div>
-            <nav class="nav-links">
-                <a href="#home">الرئيسية</a>
-                <a href="#products">المنتجات</a>
-                <a href="#about">عنّا</a>
-                <a href="#contact">تواصل</a>
-                <div class="cart-icon" onclick="toggleCart()">
-                    <i class="fas fa-shopping-cart"></i>
-                    <span class="cart-count" id="cartCount">0</span>
-                </div>
-            </nav>
-        </div>
-    </header>
-    <section class="hero" id="home">
-        <div class="hero-content">
-            <img src="https://github.com/basheer-49/CCM/blob/main/%D9%84%D9%8A%D9%86%D9%83%D9%8A%D8%AF%20%D8%A7%D9%86%20%D8%A8%D8%A7%D9%86%D8%B1%20(1080%20x%201080%20px)%20(3).png?raw=true" alt="WRAP OFFER" class="hero-logo">
-            <h2>WRAP OFFER</h2>
-            <p class="tagline">وجهتك الأولى لأجود أنواع السكاكر والشوكولاته في الأردن</p>
-            <div class="hero-stats">
-                <div class="stat-item"><div class="stat-number" id="visitCount">12,847</div><div class="stat-label">زيارة للموقع</div></div>
-                <div class="stat-item"><div class="stat-number" id="clientCount">300+</div><div class="stat-label">متجر شريك</div></div>
-                <div class="stat-item"><div class="stat-number" id="orderCount">5,230</div><div class="stat-label">طلبية منفذة</div></div>
-                <div class="stat-item"><div class="stat-number">50+</div><div class="stat-label">صنف متوفر</div></div>
-            </div>
-            <a href="#products" class="shop-btn">🛒 تبضّع الآن</a>
-        </div>
-    </section>
-    <section class="features" id="about">
-        <div class="features-grid">
-            <div class="feature-card fade-in"><div class="feature-icon">🏪</div><h3>أكثر من 300 متجر</h3><p>نعمل مع أكثر من 300 متجر في جميع محافظات المملكة الأردنية الهاشمية</p></div>
-            <div class="feature-card fade-in"><div class="feature-icon">✅</div><h3>الثقة والجودة</h3><p>نضمن لك أعلى معايير الجودة في كل منتج نقدمه لك بأسعار تنافسية</p></div>
-            <div class="feature-card fade-in"><div class="feature-icon">🚚</div><h3>توصيل سريع</h3><p>نوصل طلباتك بسرعة فائقة إلى باب متجرك أينما كنت في الأردن</p></div>
-            <div class="feature-card fade-in"><div class="feature-icon">💰</div><h3>أسعار الجملة</h3><p>أفضل أسعار الجملة للتجار مع عروض وحوافز مستمرة طوال العام</p></div>
-        </div>
-    </section>
-    <section class="products-section" id="products">
-        <div class="section-title fade-in">
-            <h2>🍬 قائمة منتجاتنا</h2>
-            <p>اختر ما تحبّه من أصنافنا المتنوعة واضفه إلى سلة مشترياتك</p>
-        </div>
-        <div class="products-grid" id="productsGrid">
-            <div class="product-card fade-in" data-id="0" data-name="باونتي" data-box="11.5" data-carton="">
-                <img src="https://albadeel.org/wp-content/uploads/2023/11/%D8%A8%D8%A7%D9%88%D9%86%D8%AA%D9%8A-Bounty.webp" alt="باونتي" class="product-image" loading="lazy" onerror="this.src='https://via.placeholder.com/300x200/FFD700/333?text=باونتي'">
-                <div class="product-info">
-                    <div class="product-name">باونتي</div>
-                    <div class="product-details"><div class="price-tag"><span class="label">سعر العلبة</span><span class="value">11.5 دينار</span></div><div class="packaging-info">📦 التعبئة: 24</div></div>
-                    <div class="quantity-control">
-                        <button class="qty-btn" onclick="updateQty(0, -1)">−</button>
-                        <span class="qty-display" id="qty-0">0</span>
-                        <button class="qty-btn" onclick="updateQty(0, 1)">+</button>
-                    </div>
-                    <button class="add-to-cart-btn" id="btn-0" onclick="addToCart(0)">
-                        <i class="fas fa-cart-plus"></i> أضف إلى السلة
-                    </button>
-                </div>
-            </div>
-            <div class="product-card fade-in" data-id="1" data-name="كيندر بوينو" data-box="17.5" data-carton="">
-                <img src="https://www.kinder.com/ma/sites/kinder_ma/files/2025-12/bueno-t2.png?t=1781102821" alt="كيندر بوينو" class="product-image" loading="lazy" onerror="this.src='https://via.placeholder.com/300x200/FFD700/333?text=كيندر بوينو'">
-                <div class="product-info">
-                    <div class="product-name">كيندر بوينو</div>
-                    <div class="product-details"><div class="price-tag"><span class="label">سعر العلبة</span><span class="value">17.5 دينار</span></div><div class="packaging-info">📦 التعبئة: 30</div></div>
-                    <div class="quantity-control">
-                        <button class="qty-btn" onclick="updateQty(1, -1)">−</button>
-                        <span class="qty-display" id="qty-1">0</span>
-                        <button class="qty-btn" onclick="updateQty(1, 1)">+</button>
-                    </div>
-                    <button class="add-to-cart-btn" id="btn-1" onclick="addToCart(1)">
-                        <i class="fas fa-cart-plus"></i> أضف إلى السلة
-                    </button>
-                </div>
-            </div>
-            <div class="product-card fade-in" data-id="2" data-name="كيندر ماكس" data-box="7.75" data-carton="">
-                <img src="https://bazar-center.com/249600-large_default/%D9%83%D9%86%D8%AF%D8%B1_%D9%85%D8%A7%D9%83%D8%B3_%D8%A7%D8%B5%D8%A7%D8%A8%D8%B9_%D8%B4%D9%88%D9%83%D9%88%D9%84%D8%A7%D8%AA%D9%87_21_%D8%BA%D9%85__36.jpg" alt="كيندر ماكس" class="product-image" loading="lazy" onerror="this.src='https://via.placeholder.com/300x200/FFD700/333?text=كيندر ماكس'">
-                <div class="product-info">
-                    <div class="product-name">كيندر ماكس</div>
-                    <div class="product-details"><div class="price-tag"><span class="label">سعر العلبة</span><span class="value">7.75 دينار</span></div><div class="packaging-info">📦 التعبئة: 36</div></div>
-                    <div class="quantity-control">
-                        <button class="qty-btn" onclick="updateQty(2, -1)">−</button>
-                        <span class="qty-display" id="qty-2">0</span>
-                        <button class="qty-btn" onclick="updateQty(2, 1)">+</button>
-                    </div>
-                    <button class="add-to-cart-btn" id="btn-2" onclick="addToCart(2)">
-                        <i class="fas fa-cart-plus"></i> أضف إلى السلة
-                    </button>
-                </div>
-            </div>
-            <div class="product-card fade-in" data-id="3" data-name="كندر t8" data-box="" data-carton="">
-                <img src="https://m.media-amazon.com/images/I/71jGx0kh+aL._AC_UF894,1000_QL80_.jpg" alt="كندر t8" class="product-image" loading="lazy" onerror="this.src='https://via.placeholder.com/300x200/FFD700/333?text=كندر t8'">
-                <div class="product-info">
-                    <div class="product-name">كندر t8</div>
-                    <div class="product-details"></div>
-                    <div class="quantity-control">
-                        <button class="qty-btn" onclick="updateQty(3, -1)">−</button>
-                        <span class="qty-display" id="qty-3">0</span>
-                        <button class="qty-btn" onclick="updateQty(3, 1)">+</button>
-                    </div>
-                    <button class="add-to-cart-btn" id="btn-3" onclick="addToCart(3)">
-                        <i class="fas fa-cart-plus"></i> أضف إلى السلة
-                    </button>
-                </div>
-            </div>
-            <div class="product-card fade-in" data-id="4" data-name="كيتكات 2 اصبع" data-box="2.75" data-carton="33.0">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS5VBPAdtWMy6607BsiqS3b1RwWXy8sXqeWFtO33VHgug&s" alt="كيتكات 2 اصبع" class="product-image" loading="lazy" onerror="this.src='https://via.placeholder.com/300x200/FFD700/333?text=كيتكات 2 اصبع'">
-                <div class="product-info">
-                    <div class="product-name">كيتكات 2 اصبع</div>
-                    <div class="product-details"><div class="price-tag"><span class="label">سعر العلبة</span><span class="value">2.75 دينار</span></div><div class="price-tag"><span class="label">سعر الكرتونة</span><span class="value">33.0 دينار</span></div><div class="packaging-info">📦 التعبئة: 10</div></div>
-                    <div class="quantity-control">
-                        <button class="qty-btn" onclick="updateQty(4, -1)">−</button>
-                        <span class="qty-display" id="qty-4">0</span>
-                        <button class="qty-btn" onclick="updateQty(4, 1)">+</button>
-                    </div>
-                    <button class="add-to-cart-btn" id="btn-4" onclick="addToCart(4)">
-                        <i class="fas fa-cart-plus"></i> أضف إلى السلة
-                    </button>
-                </div>
-            </div>
-            <div class="product-card fade-in" data-id="5" data-name="تويرل" data-box="36.0" data-carton="36.0">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2L445KEbiXdQEN5fVesYqMUxyLoVseyMXDVM6y1p7i3V0HAtEbeisSFE&s=10" alt="تويرل" class="product-image" loading="lazy" onerror="this.src='https://via.placeholder.com/300x200/FFD700/333?text=تويرل'">
-                <div class="product-info">
-                    <div class="product-name">تويرل</div>
-                    <div class="product-details"><div class="price-tag"><span class="label">سعر العلبة</span><span class="value">36.0 دينار</span></div><div class="price-tag"><span class="label">سعر الكرتونة</span><span class="value">36.0 دينار</span></div><div class="packaging-info">📦 التعبئة: 48</div></div>
-                    <div class="quantity-control">
-                        <button class="qty-btn" onclick="updateQty(5, -1)">−</button>
-                        <span class="qty-display" id="qty-5">0</span>
-                        <button class="qty-btn" onclick="updateQty(5, 1)">+</button>
-                    </div>
-                    <button class="add-to-cart-btn" id="btn-5" onclick="addToCart(5)">
-                        <i class="fas fa-cart-plus"></i> أضف إلى السلة
-                    </button>
-                </div>
-            </div>
-            <div class="product-card fade-in" data-id="6" data-name="ملتيزر" data-box="16.0" data-carton="">
-                <img src="https://img.ananinja.com/media/ninja-catalog-42/Banmaly/5000159020312_1.png?w=3840&q=75" alt="ملتيزر" class="product-image" loading="lazy" onerror="this.src='https://via.placeholder.com/300x200/FFD700/333?text=ملتيزر'">
-                <div class="product-info">
-                    <div class="product-name">ملتيزر</div>
-                    <div class="product-details"><div class="price-tag"><span class="label">سعر العلبة</span><span class="value">16.0 دينار</span></div><div class="packaging-info">📦 التعبئة: 25</div></div>
-                    <div class="quantity-control">
-                        <button class="qty-btn" onclick="updateQty(6, -1)">−</button>
-                        <span class="qty-display" id="qty-6">0</span>
-                        <button class="qty-btn" onclick="updateQty(6, 1)">+</button>
-                    </div>
-                    <button class="add-to-cart-btn" id="btn-6" onclick="addToCart(6)">
-                        <i class="fas fa-cart-plus"></i> أضف إلى السلة
-                    </button>
-                </div>
-            </div>
-            <div class="product-card fade-in" data-id="7" data-name="M&M صفر" data-box="13.25" data-carton="">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtf-Ztarm2d28k5CgGpHKNFdD8Xkq7_9WTU61SEQUc8w&s=10" alt="M&M صفر" class="product-image" loading="lazy" onerror="this.src='https://via.placeholder.com/300x200/FFD700/333?text=M&M صفر'">
-                <div class="product-info">
-                    <div class="product-name">M&M صفر</div>
-                    <div class="product-details"><div class="price-tag"><span class="label">سعر العلبة</span><span class="value">13.25 دينار</span></div><div class="packaging-info">📦 التعبئة: 24</div></div>
-                    <div class="quantity-control">
-                        <button class="qty-btn" onclick="updateQty(7, -1)">−</button>
-                        <span class="qty-display" id="qty-7">0</span>
-                        <button class="qty-btn" onclick="updateQty(7, 1)">+</button>
-                    </div>
-                    <button class="add-to-cart-btn" id="btn-7" onclick="addToCart(7)">
-                        <i class="fas fa-cart-plus"></i> أضف إلى السلة
-                    </button>
-                </div>
-            </div>
-            <div class="product-card fade-in" data-id="8" data-name="LAION CHOCLET" data-box="18.0" data-carton="">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR7x1OOrQX6UfMVe5DsBiAmskjQCRhbeHMp4884Hzac7Q&s=10" alt="LAION CHOCLET" class="product-image" loading="lazy" onerror="this.src='https://via.placeholder.com/300x200/FFD700/333?text=LAION CHOCLET'">
-                <div class="product-info">
-                    <div class="product-name">LAION CHOCLET</div>
-                    <div class="product-details"><div class="price-tag"><span class="label">سعر العلبة</span><span class="value">18.0 دينار</span></div><div class="packaging-info">📦 التعبئة: 40</div></div>
-                    <div class="quantity-control">
-                        <button class="qty-btn" onclick="updateQty(8, -1)">−</button>
-                        <span class="qty-display" id="qty-8">0</span>
-                        <button class="qty-btn" onclick="updateQty(8, 1)">+</button>
-                    </div>
-                    <button class="add-to-cart-btn" id="btn-8" onclick="addToCart(8)">
-                        <i class="fas fa-cart-plus"></i> أضف إلى السلة
-                    </button>
-                </div>
-            </div>
-            <div class="product-card fade-in" data-id="9" data-name="بوظة اوزمو" data-box="7.0" data-carton="42.0">
-                <img src="https://images.deliveryhero.io/image/darkstores/nv-global-catalog/jo/a3bbfeef-759e-4dd4-95bd-e539c246c83d.JPG" alt="بوظة اوزمو" class="product-image" loading="lazy" onerror="this.src='https://via.placeholder.com/300x200/FFD700/333?text=بوظة اوزمو'">
-                <div class="product-info">
-                    <div class="product-name">بوظة اوزمو</div>
-                    <div class="product-details"><div class="price-tag"><span class="label">سعر العلبة</span><span class="value">7.0 دينار</span></div><div class="price-tag"><span class="label">سعر الكرتونة</span><span class="value">42.0 دينار</span></div><div class="packaging-info">📦 التعبئة: 24</div></div>
-                    <div class="quantity-control">
-                        <button class="qty-btn" onclick="updateQty(9, -1)">−</button>
-                        <span class="qty-display" id="qty-9">0</span>
-                        <button class="qty-btn" onclick="updateQty(9, 1)">+</button>
-                    </div>
-                    <button class="add-to-cart-btn" id="btn-9" onclick="addToCart(9)">
-                        <i class="fas fa-cart-plus"></i> أضف إلى السلة
-                    </button>
-                </div>
-            </div>
-            <div class="product-card fade-in" data-id="10" data-name="سيليبريشن" data-box="6.5" data-carton="65.0">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjEeHaIO8UfQN1V2Yu2v1IyrTif0pffr-AVlGJSTa_Cb-nPsI6EuFhD1s&s=10" alt="سيليبريشن" class="product-image" loading="lazy" onerror="this.src='https://via.placeholder.com/300x200/FFD700/333?text=سيليبريشن'">
-                <div class="product-info">
-                    <div class="product-name">سيليبريشن</div>
-                    <div class="product-details"><div class="price-tag"><span class="label">سعر العلبة</span><span class="value">6.5 دينار</span></div><div class="price-tag"><span class="label">سعر الكرتونة</span><span class="value">65.0 دينار</span></div><div class="packaging-info">📦 التعبئة: 10</div></div>
-                    <div class="quantity-control">
-                        <button class="qty-btn" onclick="updateQty(10, -1)">−</button>
-                        <span class="qty-display" id="qty-10">0</span>
-                        <button class="qty-btn" onclick="updateQty(10, 1)">+</button>
-                    </div>
-                    <button class="add-to-cart-btn" id="btn-10" onclick="addToCart(10)">
-                        <i class="fas fa-cart-plus"></i> أضف إلى السلة
-                    </button>
-                </div>
-            </div>
-            <div class="product-card fade-in" data-id="11" data-name="بديل الكندر بوينو" data-box="5.5" data-carton="33.0">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSbgVUPVjPzjFk27IEUnxd2t2bgXRCVUEfLYYv-NJ4KAw&s" alt="بديل الكندر بوينو" class="product-image" loading="lazy" onerror="this.src='https://via.placeholder.com/300x200/FFD700/333?text=بديل الكندر بوينو'">
-                <div class="product-info">
-                    <div class="product-name">بديل الكندر بوينو</div>
-                    <div class="product-details"><div class="price-tag"><span class="label">سعر العلبة</span><span class="value">5.5 دينار</span></div><div class="price-tag"><span class="label">سعر الكرتونة</span><span class="value">33.0 دينار</span></div><div class="packaging-info">📦 التعبئة: 24</div></div>
-                    <div class="quantity-control">
-                        <button class="qty-btn" onclick="updateQty(11, -1)">−</button>
-                        <span class="qty-display" id="qty-11">0</span>
-                        <button class="qty-btn" onclick="updateQty(11, 1)">+</button>
-                    </div>
-                    <button class="add-to-cart-btn" id="btn-11" onclick="addToCart(11)">
-                        <i class="fas fa-cart-plus"></i> أضف إلى السلة
-                    </button>
-                </div>
-            </div>
-            <div class="product-card fade-in" data-id="12" data-name="بديل الباونتي" data-box="6.0" data-carton="36.0">
-                <img src="https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQY0kbq_DdAI9tR1dhiN0WZiJE9Pb0pP-lCyzxuk7166Jl6d1PI" alt="بديل الباونتي" class="product-image" loading="lazy" onerror="this.src='https://via.placeholder.com/300x200/FFD700/333?text=بديل الباونتي'">
-                <div class="product-info">
-                    <div class="product-name">بديل الباونتي</div>
-                    <div class="product-details"><div class="price-tag"><span class="label">سعر العلبة</span><span class="value">6.0 دينار</span></div><div class="price-tag"><span class="label">سعر الكرتونة</span><span class="value">36.0 دينار</span></div><div class="packaging-info">📦 التعبئة: 24</div></div>
-                    <div class="quantity-control">
-                        <button class="qty-btn" onclick="updateQty(12, -1)">−</button>
-                        <span class="qty-display" id="qty-12">0</span>
-                        <button class="qty-btn" onclick="updateQty(12, 1)">+</button>
-                    </div>
-                    <button class="add-to-cart-btn" id="btn-12" onclick="addToCart(12)">
-                        <i class="fas fa-cart-plus"></i> أضف إلى السلة
-                    </button>
-                </div>
-            </div>
-            <div class="product-card fade-in" data-id="13" data-name="بركات ليل" data-box="2.75" data-carton="33.0">
-                <img src="https://media.zid.store/thumbs/48e9fdba-af4f-440b-95a2-e566d61d5ac2/d7472c78-bf53-4e76-8691-dc839d75b281-thumbnail-500x500.PNG" alt="بركات ليل" class="product-image" loading="lazy" onerror="this.src='https://via.placeholder.com/300x200/FFD700/333?text=بركات ليل'">
-                <div class="product-info">
-                    <div class="product-name">بركات ليل</div>
-                    <div class="product-details"><div class="price-tag"><span class="label">سعر العلبة</span><span class="value">2.75 دينار</span></div><div class="price-tag"><span class="label">سعر الكرتونة</span><span class="value">33.0 دينار</span></div><div class="packaging-info">📦 التعبئة: 12</div></div>
-                    <div class="quantity-control">
-                        <button class="qty-btn" onclick="updateQty(13, -1)">−</button>
-                        <span class="qty-display" id="qty-13">0</span>
-                        <button class="qty-btn" onclick="updateQty(13, 1)">+</button>
-                    </div>
-                    <button class="add-to-cart-btn" id="btn-13" onclick="addToCart(13)">
-                        <i class="fas fa-cart-plus"></i> أضف إلى السلة
-                    </button>
-                </div>
-            </div>
-            <div class="product-card fade-in" data-id="14" data-name="بركات دوبينجو" data-box="2.75" data-carton="33.0">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSoSmuq8OuWJNF9Gc8WFY8ek-GkzJqVJ1idxXBuRirWhA&s=10" alt="بركات دوبينجو" class="product-image" loading="lazy" onerror="this.src='https://via.placeholder.com/300x200/FFD700/333?text=بركات دوبينجو'">
-                <div class="product-info">
-                    <div class="product-name">بركات دوبينجو</div>
-                    <div class="product-details"><div class="price-tag"><span class="label">سعر العلبة</span><span class="value">2.75 دينار</span></div><div class="price-tag"><span class="label">سعر الكرتونة</span><span class="value">33.0 دينار</span></div><div class="packaging-info">📦 التعبئة: 12</div></div>
-                    <div class="quantity-control">
-                        <button class="qty-btn" onclick="updateQty(14, -1)">−</button>
-                        <span class="qty-display" id="qty-14">0</span>
-                        <button class="qty-btn" onclick="updateQty(14, 1)">+</button>
-                    </div>
-                    <button class="add-to-cart-btn" id="btn-14" onclick="addToCart(14)">
-                        <i class="fas fa-cart-plus"></i> أضف إلى السلة
-                    </button>
-                </div>
-            </div>
-            <div class="product-card fade-in" data-id="15" data-name="بركات كاجي" data-box="6.5" data-carton="37.0">
-                <img src="https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRwTt_Q7wmILrIYPbRo4EHLczhrlSnhbYh5w1EgTUsNxMP_968e" alt="بركات كاجي" class="product-image" loading="lazy" onerror="this.src='https://via.placeholder.com/300x200/FFD700/333?text=بركات كاجي'">
-                <div class="product-info">
-                    <div class="product-name">بركات كاجي</div>
-                    <div class="product-details"><div class="price-tag"><span class="label">سعر العلبة</span><span class="value">6.5 دينار</span></div><div class="price-tag"><span class="label">سعر الكرتونة</span><span class="value">37.0 دينار</span></div><div class="packaging-info">📦 التعبئة: 24</div></div>
-                    <div class="quantity-control">
-                        <button class="qty-btn" onclick="updateQty(15, -1)">−</button>
-                        <span class="qty-display" id="qty-15">0</span>
-                        <button class="qty-btn" onclick="updateQty(15, 1)">+</button>
-                    </div>
-                    <button class="add-to-cart-btn" id="btn-15" onclick="addToCart(15)">
-                        <i class="fas fa-cart-plus"></i> أضف إلى السلة
-                    </button>
-                </div>
-            </div>
-            <div class="product-card fade-in" data-id="16" data-name="مارشميلو حلا" data-box="0.85" data-carton="10.2">
-                <img src="https://cdn.salla.sa/BrBYGy/cf8ce423-4070-42d4-834f-88db1e9ee45a-746.66666666667x1000-fDThi4p1Asce0pTQ0d7GhKCheZ8GJFct7RCW4FKf.png" alt="مارشميلو حلا" class="product-image" loading="lazy" onerror="this.src='https://via.placeholder.com/300x200/FFD700/333?text=مارشميلو حلا'">
-                <div class="product-info">
-                    <div class="product-name">مارشميلو حلا</div>
-                    <div class="product-details"><div class="price-tag"><span class="label">سعر العلبة</span><span class="value">0.85 دينار</span></div><div class="price-tag"><span class="label">سعر الكرتونة</span><span class="value">10.2 دينار</span></div><div class="packaging-info">📦 التعبئة: 12</div></div>
-                    <div class="quantity-control">
-                        <button class="qty-btn" onclick="updateQty(16, -1)">−</button>
-                        <span class="qty-display" id="qty-16">0</span>
-                        <button class="qty-btn" onclick="updateQty(16, 1)">+</button>
-                    </div>
-                    <button class="add-to-cart-btn" id="btn-16" onclick="addToCart(16)">
-                        <i class="fas fa-cart-plus"></i> أضف إلى السلة
-                    </button>
-                </div>
-            </div>
-            <div class="product-card fade-in" data-id="17" data-name="مشروب غازي ZERO" data-box="0.75" data-carton="18.0">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQ0WDqt4VJaScz3bF18UugkmgXg214H8gNuq4sEeQlKFT-ajzUvRcQmrU&s=10" alt="مشروب غازي ZERO" class="product-image" loading="lazy" onerror="this.src='https://via.placeholder.com/300x200/FFD700/333?text=مشروب غازي ZERO'">
-                <div class="product-info">
-                    <div class="product-name">مشروب غازي ZERO</div>
-                    <div class="product-details"><div class="price-tag"><span class="label">سعر العلبة</span><span class="value">0.75 دينار</span></div><div class="price-tag"><span class="label">سعر الكرتونة</span><span class="value">18.0 دينار</span></div><div class="packaging-info">📦 التعبئة: 24</div></div>
-                    <div class="quantity-control">
-                        <button class="qty-btn" onclick="updateQty(17, -1)">−</button>
-                        <span class="qty-display" id="qty-17">0</span>
-                        <button class="qty-btn" onclick="updateQty(17, 1)">+</button>
-                    </div>
-                    <button class="add-to-cart-btn" id="btn-17" onclick="addToCart(17)">
-                        <i class="fas fa-cart-plus"></i> أضف إلى السلة
-                    </button>
-                </div>
-            </div>
-            <div class="product-card fade-in" data-id="18" data-name="مشروب طاقة SURGE" data-box="5.5" data-carton="">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRj0XcqeA1A6RdApI69Rnp2ZieqJWjj77_7osudSqPKJQ&s=10" alt="مشروب طاقة SURGE" class="product-image" loading="lazy" onerror="this.src='https://via.placeholder.com/300x200/FFD700/333?text=مشروب طاقة SURGE'">
-                <div class="product-info">
-                    <div class="product-name">مشروب طاقة SURGE</div>
-                    <div class="product-details"><div class="price-tag"><span class="label">سعر العلبة</span><span class="value">5.5 دينار</span></div><div class="packaging-info">📦 التعبئة: 24</div></div>
-                    <div class="quantity-control">
-                        <button class="qty-btn" onclick="updateQty(18, -1)">−</button>
-                        <span class="qty-display" id="qty-18">0</span>
-                        <button class="qty-btn" onclick="updateQty(18, 1)">+</button>
-                    </div>
-                    <button class="add-to-cart-btn" id="btn-18" onclick="addToCart(18)">
-                        <i class="fas fa-cart-plus"></i> أضف إلى السلة
-                    </button>
-                </div>
-            </div>
-            <div class="product-card fade-in" data-id="19" data-name="مشروب طاقة فريجو" data-box="7.0" data-carton="">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS9pIOKjufPCnDRlLR8MfPj6bRbGVGMpBIKXcaGGyOctQ&s=10" alt="مشروب طاقة فريجو" class="product-image" loading="lazy" onerror="this.src='https://via.placeholder.com/300x200/FFD700/333?text=مشروب طاقة فريجو'">
-                <div class="product-info">
-                    <div class="product-name">مشروب طاقة فريجو</div>
-                    <div class="product-details"><div class="price-tag"><span class="label">سعر العلبة</span><span class="value">7.0 دينار</span></div><div class="packaging-info">📦 التعبئة: 24</div></div>
-                    <div class="quantity-control">
-                        <button class="qty-btn" onclick="updateQty(19, -1)">−</button>
-                        <span class="qty-display" id="qty-19">0</span>
-                        <button class="qty-btn" onclick="updateQty(19, 1)">+</button>
-                    </div>
-                    <button class="add-to-cart-btn" id="btn-19" onclick="addToCart(19)">
-                        <i class="fas fa-cart-plus"></i> أضف إلى السلة
-                    </button>
-                </div>
-            </div>
-            <div class="product-card fade-in" data-id="20" data-name="بانينو حلل" data-box="" data-carton="28.5">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQDxpu7FXIzb3spHj2mGV8sieEKuANiMDDmNxfx1i0xBCpBCE3gb8AL2So&s=10" alt="بانينو حلل" class="product-image" loading="lazy" onerror="this.src='https://via.placeholder.com/300x200/FFD700/333?text=بانينو حلل'">
-                <div class="product-info">
-                    <div class="product-name">بانينو حلل</div>
-                    <div class="product-details"><div class="price-tag"><span class="label">سعر الكرتونة</span><span class="value">28.5 دينار</span></div><div class="packaging-info">📦 التعبئة: 6 كيلو </div></div>
-                    <div class="quantity-control">
-                        <button class="qty-btn" onclick="updateQty(20, -1)">−</button>
-                        <span class="qty-display" id="qty-20">0</span>
-                        <button class="qty-btn" onclick="updateQty(20, 1)">+</button>
-                    </div>
-                    <button class="add-to-cart-btn" id="btn-20" onclick="addToCart(20)">
-                        <i class="fas fa-cart-plus"></i> أضف إلى السلة
-                    </button>
-                </div>
-            </div>
-            <div class="product-card fade-in" data-id="21" data-name="بانينو سوجار" data-box="5.5" data-carton="33.0">
-                <img src="رhttps://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTN-CW4rdupFEHwOVbePXCSmZA6yqsKxKC8PjvTPPMHXUUDwuGAmDPL3LKS&s=10" alt="بانينو سوجار" class="product-image" loading="lazy" onerror="this.src='https://via.placeholder.com/300x200/FFD700/333?text=بانينو سوجار'">
-                <div class="product-info">
-                    <div class="product-name">بانينو سوجار</div>
-                    <div class="product-details"><div class="price-tag"><span class="label">سعر العلبة</span><span class="value">5.5 دينار</span></div><div class="price-tag"><span class="label">سعر الكرتونة</span><span class="value">33.0 دينار</span></div><div class="packaging-info">📦 التعبئة: 24</div></div>
-                    <div class="quantity-control">
-                        <button class="qty-btn" onclick="updateQty(21, -1)">−</button>
-                        <span class="qty-display" id="qty-21">0</span>
-                        <button class="qty-btn" onclick="updateQty(21, 1)">+</button>
-                    </div>
-                    <button class="add-to-cart-btn" id="btn-21" onclick="addToCart(21)">
-                        <i class="fas fa-cart-plus"></i> أضف إلى السلة
-                    </button>
-                </div>
-            </div>
-            <div class="product-card fade-in" data-id="22" data-name="اندومي كوري" data-box="0.45" data-carton="18.0">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR1dpelgp5qq7kkbh2Vd-jnh26lot83B9uhNBE0ZNoUqQ&s=10" alt="اندومي كوري" class="product-image" loading="lazy" onerror="this.src='https://via.placeholder.com/300x200/FFD700/333?text=اندومي كوري'">
-                <div class="product-info">
-                    <div class="product-name">اندومي كوري</div>
-                    <div class="product-details"><div class="price-tag"><span class="label">سعر العلبة</span><span class="value">0.45 دينار</span></div><div class="price-tag"><span class="label">سعر الكرتونة</span><span class="value">18.0 دينار</span></div><div class="packaging-info">📦 التعبئة: 40</div></div>
-                    <div class="quantity-control">
-                        <button class="qty-btn" onclick="updateQty(22, -1)">−</button>
-                        <span class="qty-display" id="qty-22">0</span>
-                        <button class="qty-btn" onclick="updateQty(22, 1)">+</button>
-                    </div>
-                    <button class="add-to-cart-btn" id="btn-22" onclick="addToCart(22)">
-                        <i class="fas fa-cart-plus"></i> أضف إلى السلة
-                    </button>
-                </div>
-            </div>
-            <div class="product-card fade-in" data-id="23" data-name="ميني شورز مارس و سنكرز" data-box="" data-carton="85.0">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRt1FXQ2RlKn0MAyOECy6T8GugpELG7QEQfS_RtJD-7zQ&s=10" alt="ميني شورز مارس و سنكرز" class="product-image" loading="lazy" onerror="this.src='https://via.placeholder.com/300x200/FFD700/333?text=ميني شورز مارس و سنكرز'">
-                <div class="product-info">
-                    <div class="product-name">ميني شورز مارس و سنكرز</div>
-                    <div class="product-details"><div class="price-tag"><span class="label">سعر الكرتونة</span><span class="value">85.0 دينار</span></div><div class="packaging-info">📦 التعبئة: 10 كيلو</div></div>
-                    <div class="quantity-control">
-                        <button class="qty-btn" onclick="updateQty(23, -1)">−</button>
-                        <span class="qty-display" id="qty-23">0</span>
-                        <button class="qty-btn" onclick="updateQty(23, 1)">+</button>
-                    </div>
-                    <button class="add-to-cart-btn" id="btn-23" onclick="addToCart(23)">
-                        <i class="fas fa-cart-plus"></i> أضف إلى السلة
-                    </button>
-                </div>
-            </div>
-            <div class="product-card fade-in" data-id="24" data-name="علكة لواكر" data-box="0.31" data-carton="">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRPxOJTrbiGc1dr89cBW0nXpd0qdgR0w-1kLoQkLmqkWQ&s=10" alt="علكة لواكر" class="product-image" loading="lazy" onerror="this.src='https://via.placeholder.com/300x200/FFD700/333?text=علكة لواكر'">
-                <div class="product-info">
-                    <div class="product-name">علكة لواكر</div>
-                    <div class="product-details"><div class="price-tag"><span class="label">سعر العلبة</span><span class="value">0.31 دينار</span></div></div>
-                    <div class="quantity-control">
-                        <button class="qty-btn" onclick="updateQty(24, -1)">−</button>
-                        <span class="qty-display" id="qty-24">0</span>
-                        <button class="qty-btn" onclick="updateQty(24, 1)">+</button>
-                    </div>
-                    <button class="add-to-cart-btn" id="btn-24" onclick="addToCart(24)">
-                        <i class="fas fa-cart-plus"></i> أضف إلى السلة
-                    </button>
-                </div>
-            </div>
-            <div class="product-card fade-in" data-id="25" data-name="مينتوس لواكر" data-box="" data-carton="">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSy6tS8vaSrlosZYjruuRnzY09xe2eWlh9inSMcVXy65Q&s=10" alt="مينتوس لواكر" class="product-image" loading="lazy" onerror="this.src='https://via.placeholder.com/300x200/FFD700/333?text=مينتوس لواكر'">
-                <div class="product-info">
-                    <div class="product-name">مينتوس لواكر</div>
-                    <div class="product-details"></div>
-                    <div class="quantity-control">
-                        <button class="qty-btn" onclick="updateQty(25, -1)">−</button>
-                        <span class="qty-display" id="qty-25">0</span>
-                        <button class="qty-btn" onclick="updateQty(25, 1)">+</button>
-                    </div>
-                    <button class="add-to-cart-btn" id="btn-25" onclick="addToCart(25)">
-                        <i class="fas fa-cart-plus"></i> أضف إلى السلة
-                    </button>
-                </div>
-            </div>
-            <div class="product-card fade-in" data-id="27" data-name="بيض بلاستيك" data-box="5.0" data-carton="">
-                <img src="https://neocart.ae/cdn/shop/products/Kingegg-01_600x.jpg?v=1676436574" alt="بيض بلاستيك" class="product-image" loading="lazy" onerror="this.src='https://via.placeholder.com/300x200/FFD700/333?text=بيض بلاستيك'">
-                <div class="product-info">
-                    <div class="product-name">بيض بلاستيك</div>
-                    <div class="product-details"><div class="price-tag"><span class="label">سعر العلبة</span><span class="value">5.0 دينار</span></div><div class="packaging-info">📦 التعبئة: 24</div></div>
-                    <div class="quantity-control">
-                        <button class="qty-btn" onclick="updateQty(27, -1)">−</button>
-                        <span class="qty-display" id="qty-27">0</span>
-                        <button class="qty-btn" onclick="updateQty(27, 1)">+</button>
-                    </div>
-                    <button class="add-to-cart-btn" id="btn-27" onclick="addToCart(27)">
-                        <i class="fas fa-cart-plus"></i> أضف إلى السلة
-                    </button>
-                </div>
-            </div>
-            <div class="product-card fade-in" data-id="28" data-name="بيض ديناصور" data-box="5.0" data-carton="">
-                <img src="https://f.nooncdn.com/p/v1558702227/N26097731A_1.jpg?width=800" alt="بيض ديناصور" class="product-image" loading="lazy" onerror="this.src='https://via.placeholder.com/300x200/FFD700/333?text=بيض ديناصور'">
-                <div class="product-info">
-                    <div class="product-name">بيض ديناصور</div>
-                    <div class="product-details"><div class="price-tag"><span class="label">سعر العلبة</span><span class="value">5.0 دينار</span></div><div class="packaging-info">📦 التعبئة: 24</div></div>
-                    <div class="quantity-control">
-                        <button class="qty-btn" onclick="updateQty(28, -1)">−</button>
-                        <span class="qty-display" id="qty-28">0</span>
-                        <button class="qty-btn" onclick="updateQty(28, 1)">+</button>
-                    </div>
-                    <button class="add-to-cart-btn" id="btn-28" onclick="addToCart(28)">
-                        <i class="fas fa-cart-plus"></i> أضف إلى السلة
-                    </button>
-                </div>
-            </div>
-            <div class="product-card fade-in" data-id="29" data-name="بيض اللابوبو" data-box="5.0" data-carton="">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS9nF_9gR4kKQi-v5IKZOjeWQ306myBqI5EYdGzP3DWRzkxmnGZGU5E7fk&s=10" alt="بيض اللابوبو" class="product-image" loading="lazy" onerror="this.src='https://via.placeholder.com/300x200/FFD700/333?text=بيض اللابوبو'">
-                <div class="product-info">
-                    <div class="product-name">بيض اللابوبو</div>
-                    <div class="product-details"><div class="price-tag"><span class="label">سعر العلبة</span><span class="value">5.0 دينار</span></div></div>
-                    <div class="quantity-control">
-                        <button class="qty-btn" onclick="updateQty(29, -1)">−</button>
-                        <span class="qty-display" id="qty-29">0</span>
-                        <button class="qty-btn" onclick="updateQty(29, 1)">+</button>
-                    </div>
-                    <button class="add-to-cart-btn" id="btn-29" onclick="addToCart(29)">
-                        <i class="fas fa-cart-plus"></i> أضف إلى السلة
-                    </button>
-                </div>
-            </div>
-            <div class="product-card fade-in" data-id="30" data-name="بيض ماستر ترند" data-box="5.0" data-carton="">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTeZnkSQobbskevSGPmXPGPVAX55q1stm-ZZhA4iDlchg&s" alt="بيض ماستر ترند" class="product-image" loading="lazy" onerror="this.src='https://via.placeholder.com/300x200/FFD700/333?text=بيض ماستر ترند'">
-                <div class="product-info">
-                    <div class="product-name">بيض ماستر ترند</div>
-                    <div class="product-details"><div class="price-tag"><span class="label">سعر العلبة</span><span class="value">5.0 دينار</span></div><div class="packaging-info">📦 التعبئة: 24</div></div>
-                    <div class="quantity-control">
-                        <button class="qty-btn" onclick="updateQty(30, -1)">−</button>
-                        <span class="qty-display" id="qty-30">0</span>
-                        <button class="qty-btn" onclick="updateQty(30, 1)">+</button>
-                    </div>
-                    <button class="add-to-cart-btn" id="btn-30" onclick="addToCart(30)">
-                        <i class="fas fa-cart-plus"></i> أضف إلى السلة
-                    </button>
-                </div>
-            </div>
-            <div class="product-card fade-in" data-id="31" data-name="العاب هدايا حبات النص" data-box="10.0" data-carton="">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTkm754peNfKoGAcgQHaP4Ww_G2dGJl-6azbix0QOmR_g&s=10" alt="العاب هدايا حبات النص" class="product-image" loading="lazy" onerror="this.src='https://via.placeholder.com/300x200/FFD700/333?text=العاب هدايا حبات النص'">
-                <div class="product-info">
-                    <div class="product-name">العاب هدايا حبات النص</div>
-                    <div class="product-details"><div class="price-tag"><span class="label">سعر العلبة</span><span class="value">10.0 دينار</span></div></div>
-                    <div class="quantity-control">
-                        <button class="qty-btn" onclick="updateQty(31, -1)">−</button>
-                        <span class="qty-display" id="qty-31">0</span>
-                        <button class="qty-btn" onclick="updateQty(31, 1)">+</button>
-                    </div>
-                    <button class="add-to-cart-btn" id="btn-31" onclick="addToCart(31)">
-                        <i class="fas fa-cart-plus"></i> أضف إلى السلة
-                    </button>
-                </div>
-            </div>
-            <div class="product-card fade-in" data-id="32" data-name="العاب هدايا حبات الدينار" data-box="10.0" data-carton="">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTkm754peNfKoGAcgQHaP4Ww_G2dGJl-6azbix0QOmR_g&s=10" alt="العاب هدايا حبات الدينار" class="product-image" loading="lazy" onerror="this.src='https://via.placeholder.com/300x200/FFD700/333?text=العاب هدايا حبات الدينار'">
-                <div class="product-info">
-                    <div class="product-name">العاب هدايا حبات الدينار</div>
-                    <div class="product-details"><div class="price-tag"><span class="label">سعر العلبة</span><span class="value">10.0 دينار</span></div></div>
-                    <div class="quantity-control">
-                        <button class="qty-btn" onclick="updateQty(32, -1)">−</button>
-                        <span class="qty-display" id="qty-32">0</span>
-                        <button class="qty-btn" onclick="updateQty(32, 1)">+</button>
-                    </div>
-                    <button class="add-to-cart-btn" id="btn-32" onclick="addToCart(32)">
-                        <i class="fas fa-cart-plus"></i> أضف إلى السلة
-                    </button>
-                </div>
-            </div>
-            <div class="product-card fade-in" data-id="33" data-name="البينا لواكر" data-box="7.0" data-carton="">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRWjJTFofH7_oDKRFM5a_NLwj0HNtgS3aSi_Nx5zkl5_YC4D5PQrT1GUlc1&s=10" alt="البينا لواكر" class="product-image" loading="lazy" onerror="this.src='https://via.placeholder.com/300x200/FFD700/333?text=البينا لواكر'">
-                <div class="product-info">
-                    <div class="product-name">البينا لواكر</div>
-                    <div class="product-details"><div class="price-tag"><span class="label">سعر العلبة</span><span class="value">7.0 دينار</span></div></div>
-                    <div class="quantity-control">
-                        <button class="qty-btn" onclick="updateQty(33, -1)">−</button>
-                        <span class="qty-display" id="qty-33">0</span>
-                        <button class="qty-btn" onclick="updateQty(33, 1)">+</button>
-                    </div>
-                    <button class="add-to-cart-btn" id="btn-33" onclick="addToCart(33)">
-                        <i class="fas fa-cart-plus"></i> أضف إلى السلة
-                    </button>
-                </div>
-            </div>
-            <div class="product-card fade-in" data-id="34" data-name="جميع أنواع الحمضيات حبات الدينار" data-box="9.5" data-carton="">
-                <img src="nan" alt="جميع أنواع الحمضيات حبات الدينار" class="product-image" loading="lazy" onerror="this.src='https://via.placeholder.com/300x200/FFD700/333?text=جميع أنواع الحمضيات حبات الدينار'">
-                <div class="product-info">
-                    <div class="product-name">جميع أنواع الحمضيات حبات الدينار</div>
-                    <div class="product-details"><div class="price-tag"><span class="label">سعر العلبة</span><span class="value">9.5 دينار</span></div></div>
-                    <div class="quantity-control">
-                        <button class="qty-btn" onclick="updateQty(34, -1)">−</button>
-                        <span class="qty-display" id="qty-34">0</span>
-                        <button class="qty-btn" onclick="updateQty(34, 1)">+</button>
-                    </div>
-                    <button class="add-to-cart-btn" id="btn-34" onclick="addToCart(34)">
-                        <i class="fas fa-cart-plus"></i> أضف إلى السلة
-                    </button>
-                </div>
-            </div>
-            <div class="product-card fade-in" data-id="35" data-name="مالتيزر ارنب" data-box="15.6" data-carton="">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTV2kU4y_a_9_T1DwsfAnuLURis0I7sSKZQHyymwv4RoA&s=10" alt="مالتيزر ارنب" class="product-image" loading="lazy" onerror="this.src='https://via.placeholder.com/300x200/FFD700/333?text=مالتيزر ارنب'">
-                <div class="product-info">
-                    <div class="product-name">مالتيزر ارنب</div>
-                    <div class="product-details"><div class="price-tag"><span class="label">سعر العلبة</span><span class="value">15.6 دينار</span></div></div>
-                    <div class="quantity-control">
-                        <button class="qty-btn" onclick="updateQty(35, -1)">−</button>
-                        <span class="qty-display" id="qty-35">0</span>
-                        <button class="qty-btn" onclick="updateQty(35, 1)">+</button>
-                    </div>
-                    <button class="add-to-cart-btn" id="btn-35" onclick="addToCart(35)">
-                        <i class="fas fa-cart-plus"></i> أضف إلى السلة
-                    </button>
-                </div>
-            </div>
-            <div class="product-card fade-in" data-id="36" data-name="مالتيزر بار" data-box="18.0" data-carton="">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSY4kqZOjDoJq2hLEJTEqLjkEKPywSqJZBbq_TMUXbXtA&s" alt="مالتيزر بار" class="product-image" loading="lazy" onerror="this.src='https://via.placeholder.com/300x200/FFD700/333?text=مالتيزر بار'">
-                <div class="product-info">
-                    <div class="product-name">مالتيزر بار</div>
-                    <div class="product-details"><div class="price-tag"><span class="label">سعر العلبة</span><span class="value">18.0 دينار</span></div></div>
-                    <div class="quantity-control">
-                        <button class="qty-btn" onclick="updateQty(36, -1)">−</button>
-                        <span class="qty-display" id="qty-36">0</span>
-                        <button class="qty-btn" onclick="updateQty(36, 1)">+</button>
-                    </div>
-                    <button class="add-to-cart-btn" id="btn-36" onclick="addToCart(36)">
-                        <i class="fas fa-cart-plus"></i> أضف إلى السلة
-                    </button>
-                </div>
-            </div>
-            <div class="product-card fade-in" data-id="39" data-name="ترمس" data-box="" data-carton="10.0">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ-HK8v3kC_ktcS3CjyuFTEjChT2syTUxzS2tped9lKow&s=10" alt="ترمس" class="product-image" loading="lazy" onerror="this.src='https://via.placeholder.com/300x200/FFD700/333?text=ترمس'">
-                <div class="product-info">
-                    <div class="product-name">ترمس</div>
-                    <div class="product-details"><div class="price-tag"><span class="label">سعر الكرتونة</span><span class="value">10.0 دينار</span></div><div class="packaging-info">📦 التعبئة: 10</div></div>
-                    <div class="quantity-control">
-                        <button class="qty-btn" onclick="updateQty(39, -1)">−</button>
-                        <span class="qty-display" id="qty-39">0</span>
-                        <button class="qty-btn" onclick="updateQty(39, 1)">+</button>
-                    </div>
-                    <button class="add-to-cart-btn" id="btn-39" onclick="addToCart(39)">
-                        <i class="fas fa-cart-plus"></i> أضف إلى السلة
-                    </button>
-                </div>
-            </div>
-            <div class="product-card fade-in" data-id="40" data-name="ميلكا الواح" data-box="0.85" data-carton="">
-                <img src="https://bazar-center.com/249356-large_default/%D9%85%D9%84%D9%83%D8%A7_%D8%A7%D9%84%D9%88%D8%A7%D8%AD_%D8%B4%D9%88%D9%83%D9%88%D9%84%D8%A7%D8%AA%D9%87_%D8%A8%D8%A7%D9%84%D8%AD%D9%84%D9%8A%D8%A8_%D9%85%D8%B9_%D8%A7%D9%84%D8%B2%D8%A8%D9%8A%D8%A8__100_%D8%BA%D9%85__22.jpg" alt="ميلكا الواح" class="product-image" loading="lazy" onerror="this.src='https://via.placeholder.com/300x200/FFD700/333?text=ميلكا الواح'">
-                <div class="product-info">
-                    <div class="product-name">ميلكا الواح</div>
-                    <div class="product-details"><div class="price-tag"><span class="label">سعر العلبة</span><span class="value">0.85 دينار</span></div></div>
-                    <div class="quantity-control">
-                        <button class="qty-btn" onclick="updateQty(40, -1)">−</button>
-                        <span class="qty-display" id="qty-40">0</span>
-                        <button class="qty-btn" onclick="updateQty(40, 1)">+</button>
-                    </div>
-                    <button class="add-to-cart-btn" id="btn-40" onclick="addToCart(40)">
-                        <i class="fas fa-cart-plus"></i> أضف إلى السلة
-                    </button>
-                </div>
-            </div>
-            <div class="product-card fade-in" data-id="42" data-name="شوكو برنس" data-box="11.25" data-carton="">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRRdHvp28HfNbb8VuyeQOjzy3nNslH-fn0LUyA5bsDTwA&s=10" alt="شوكو برنس" class="product-image" loading="lazy" onerror="this.src='https://via.placeholder.com/300x200/FFD700/333?text=شوكو برنس'">
-                <div class="product-info">
-                    <div class="product-name">شوكو برنس</div>
-                    <div class="product-details"><div class="price-tag"><span class="label">سعر العلبة</span><span class="value">11.25 دينار</span></div><div class="packaging-info">📦 التعبئة: 40</div></div>
-                    <div class="quantity-control">
-                        <button class="qty-btn" onclick="updateQty(42, -1)">−</button>
-                        <span class="qty-display" id="qty-42">0</span>
-                        <button class="qty-btn" onclick="updateQty(42, 1)">+</button>
-                    </div>
-                    <button class="add-to-cart-btn" id="btn-42" onclick="addToCart(42)">
-                        <i class="fas fa-cart-plus"></i> أضف إلى السلة
-                    </button>
-                </div>
-            </div>
-            <div class="product-card fade-in" data-id="43" data-name="فليك" data-box="7.75" data-carton="">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQEFCq457VBPrpsgZZkhBgLa51VIZcUgklUrz2Cq4it8w&s" alt="فليك" class="product-image" loading="lazy" onerror="this.src='https://via.placeholder.com/300x200/FFD700/333?text=فليك'">
-                <div class="product-info">
-                    <div class="product-name">فليك</div>
-                    <div class="product-details"><div class="price-tag"><span class="label">سعر العلبة</span><span class="value">7.75 دينار</span></div><div class="packaging-info">📦 التعبئة: 36</div></div>
-                    <div class="quantity-control">
-                        <button class="qty-btn" onclick="updateQty(43, -1)">−</button>
-                        <span class="qty-display" id="qty-43">0</span>
-                        <button class="qty-btn" onclick="updateQty(43, 1)">+</button>
-                    </div>
-                    <button class="add-to-cart-btn" id="btn-43" onclick="addToCart(43)">
-                        <i class="fas fa-cart-plus"></i> أضف إلى السلة
-                    </button>
-                </div>
-            </div>
-            <div class="product-card fade-in" data-id="44" data-name="بابلي" data-box="3.25" data-carton="">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ1rpnv5NC8sqcWfKwe5jsdJJLspVYuOPzCDg_F5TSjtA&s=10" alt="بابلي" class="product-image" loading="lazy" onerror="this.src='https://via.placeholder.com/300x200/FFD700/333?text=بابلي'">
-                <div class="product-info">
-                    <div class="product-name">بابلي</div>
-                    <div class="product-details"><div class="price-tag"><span class="label">سعر العلبة</span><span class="value">3.25 دينار</span></div><div class="packaging-info">📦 التعبئة: 12</div></div>
-                    <div class="quantity-control">
-                        <button class="qty-btn" onclick="updateQty(44, -1)">−</button>
-                        <span class="qty-display" id="qty-44">0</span>
-                        <button class="qty-btn" onclick="updateQty(44, 1)">+</button>
-                    </div>
-                    <button class="add-to-cart-btn" id="btn-44" onclick="addToCart(44)">
-                        <i class="fas fa-cart-plus"></i> أضف إلى السلة
-                    </button>
-                </div>
-            </div>
-            <div class="product-card fade-in" data-id="45" data-name="سنكرز" data-box="4.3" data-carton="">
-                <img src="https://cdn.salla.sa/AzAbWD/a71f4fd0-c11f-4093-beff-dfb4d2b010b3-1000x1000-VIpjmKKVZKKHo2Jyo8eYWVJpLBTbUXOdQ4SuDD8X.jpg" alt="سنكرز" class="product-image" loading="lazy" onerror="this.src='https://via.placeholder.com/300x200/FFD700/333?text=سنكرز'">
-                <div class="product-info">
-                    <div class="product-name">سنكرز</div>
-                    <div class="product-details"><div class="price-tag"><span class="label">سعر العلبة</span><span class="value">4.3 دينار</span></div><div class="packaging-info">📦 التعبئة: 10 حبات</div></div>
-                    <div class="quantity-control">
-                        <button class="qty-btn" onclick="updateQty(45, -1)">−</button>
-                        <span class="qty-display" id="qty-45">0</span>
-                        <button class="qty-btn" onclick="updateQty(45, 1)">+</button>
-                    </div>
-                    <button class="add-to-cart-btn" id="btn-45" onclick="addToCart(45)">
-                        <i class="fas fa-cart-plus"></i> أضف إلى السلة
-                    </button>
-                </div>
-            </div>
-            <div class="product-card fade-in" data-id="47" data-name="M&M بني" data-box="13.25" data-carton="">
-                <img src="https://www.broadwaycandy.com/cdn/shop/files/s-l1200.jpg?v=1724844285" alt="M&M بني" class="product-image" loading="lazy" onerror="this.src='https://via.placeholder.com/300x200/FFD700/333?text=M&M بني'">
-                <div class="product-info">
-                    <div class="product-name">M&M بني</div>
-                    <div class="product-details"><div class="price-tag"><span class="label">سعر العلبة</span><span class="value">13.25 دينار</span></div><div class="packaging-info">📦 التعبئة: 24</div></div>
-                    <div class="quantity-control">
-                        <button class="qty-btn" onclick="updateQty(47, -1)">−</button>
-                        <span class="qty-display" id="qty-47">0</span>
-                        <button class="qty-btn" onclick="updateQty(47, 1)">+</button>
-                    </div>
-                    <button class="add-to-cart-btn" id="btn-47" onclick="addToCart(47)">
-                        <i class="fas fa-cart-plus"></i> أضف إلى السلة
-                    </button>
-                </div>
-            </div>
-            <div class="product-card fade-in" data-id="48" data-name="بي ردي نوتلا" data-box="" data-carton="">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbbGa4Oh9oO3pTmbE5ETll921nZDA5oK_tXCxLJhT-tQ&s=10" alt="بي ردي نوتلا" class="product-image" loading="lazy" onerror="this.src='https://via.placeholder.com/300x200/FFD700/333?text=بي ردي نوتلا'">
-                <div class="product-info">
-                    <div class="product-name">بي ردي نوتلا</div>
-                    <div class="product-details"></div>
-                    <div class="quantity-control">
-                        <button class="qty-btn" onclick="updateQty(48, -1)">−</button>
-                        <span class="qty-display" id="qty-48">0</span>
-                        <button class="qty-btn" onclick="updateQty(48, 1)">+</button>
-                    </div>
-                    <button class="add-to-cart-btn" id="btn-48" onclick="addToCart(48)">
-                        <i class="fas fa-cart-plus"></i> أضف إلى السلة
-                    </button>
-                </div>
-            </div>
-            <div class="product-card fade-in" data-id="49" data-name="فريرو روشيه" data-box="" data-carton="">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQLX_TmYsHxOEjzUizvVIy3oV82O9uvF_3_ouCpPO2x-Q&s=10" alt="فريرو روشيه" class="product-image" loading="lazy" onerror="this.src='https://via.placeholder.com/300x200/FFD700/333?text=فريرو روشيه'">
-                <div class="product-info">
-                    <div class="product-name">فريرو روشيه</div>
-                    <div class="product-details"></div>
-                    <div class="quantity-control">
-                        <button class="qty-btn" onclick="updateQty(49, -1)">−</button>
-                        <span class="qty-display" id="qty-49">0</span>
-                        <button class="qty-btn" onclick="updateQty(49, 1)">+</button>
-                    </div>
-                    <button class="add-to-cart-btn" id="btn-49" onclick="addToCart(49)">
-                        <i class="fas fa-cart-plus"></i> أضف إلى السلة
-                    </button>
-                </div>
-            </div>
-        </div>
-    </section>
-    <section class="quotes-section">
-        <h2>💬 عبارات من قلب السوق</h2>
-        <div class="quotes-grid">
-            <div class="quote-card fade-in"><i class="fas fa-quote-right"></i>"السوق سوقنا، والحلو حلوانا"</div>
-            <div class="quote-card fade-in"><i class="fas fa-quote-right"></i>"كل يوم طعم جديد، وكل لقمة فرحة"</div>
-            <div class="quote-card fade-in"><i class="fas fa-quote-right"></i>"الحلويات تجمع الناس، والجودة تحافظ عليهم"</div>
-            <div class="quote-card fade-in"><i class="fas fa-quote-right"></i>"مع WRAP OFFER، تجارتك تزدهر"</div>
-            <div class="quote-card fade-in"><i class="fas fa-quote-right"></i>"الثقة سر نجاحنا، والجودة عنواننا"</div>
-            <div class="quote-card fade-in"><i class="fas fa-quote-right"></i>"من الأردن للعالم، بنكهة الحب والجودة"</div>
-        </div>
-    </section>
-    <section class="features" style="background: linear-gradient(135deg, #FFF8E1, #FFECB3);">
-        <div class="section-title fade-in">
-            <h2>🤝 لعملائنا التجار الأعزاء</h2>
-            <p style="max-width: 800px; margin: 0 auto; line-height: 2; font-size: 1.05rem;">
-                نحن في WRAP OFFER نفتخر بشراكتكم وثقتكم بنا. نعدكم دائماً بتوفير أجود المنتجات بأفضل الأسعار، 
-                ونوعدكم بالتطوير المستمر لخدماتنا لتلبية احتياجاتكم. معاً نبني مستقبلاً حلواً! 🍫✨
-            </p>
-        </div>
-    </section>
-    <footer class="footer" id="contact">
-        <div class="footer-content">
-            <div class="footer-section">
-                <h3>WRAP OFFER</h3>
-                <p>شركة متخصصة في توزيع السكاكر والشوكولاته في المملكة الأردنية الهاشمية. نعمل مع أكثر من 300 متجر في جميع المحافظات.</p>
-            </div>
-            <div class="footer-section">
-                <h3>تواصل معنا</h3>
-                <p><i class="fab fa-whatsapp"></i> واتساب: 0781144716</p>
-                <p><i class="fas fa-map-marker-alt"></i> المملكة الأردنية الهاشمية</p>
-                <div class="social-links">
-                    <a href="https://web.facebook.com/profile.php?id=61580014494849&locale=ar_AR" target="_blank"><i class="fab fa-facebook-f"></i></a>
-                    <a href="https://wa.me/962781144716" target="_blank"><i class="fab fa-whatsapp"></i></a>
-                    <a href="tel:+962781144716"><i class="fas fa-phone"></i></a>
-                </div>
-            </div>
-            <div class="footer-section">
-                <h3>ساعات العمل</h3>
-                <p>السبت - الخميس: 8:00 ص - 8:00 م</p>
-                <p>الجمعة: 10:00 ص - 6:00 م</p>
-                <p>التوصيل متوفر لجميع المحافظات</p>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>جميع حقوق النشر محفوظة © 2026 WRAP OFFER - بشير أبو عمر & زيد اليازوري</p>
-        </div>
-    </footer>
-    <div class="overlay" id="overlay" onclick="toggleCart()"></div>
-    <div class="cart-sidebar" id="cartSidebar">
-        <div class="cart-header">
-            <h3>🛒 سلة المشتريات</h3>
-            <button class="close-cart" onclick="toggleCart()">✕</button>
-        </div>
-        <div class="cart-items" id="cartItems">
-            <div class="empty-cart-msg"><i class="fas fa-shopping-basket"></i><p>سلة المشتريات فارغة</p></div>
-        </div>
-        <div class="cart-footer">
-            <div class="cart-total"><span>الإجمالي:</span><span id="cartTotal">0 دينار</span></div>
-            <button class="checkout-btn" onclick="openCheckout()"><i class="fas fa-paper-plane"></i> إرسال الطلبية</button>
-        </div>
-    </div>
-    <div class="overlay" id="checkoutOverlay" onclick="closeCheckout()"></div>
-    <div class="checkout-modal" id="checkoutModal">
-        <div class="checkout-header"><h2>📝 إتمام الطلبية</h2></div>
-        <div class="checkout-body">
-            <form id="orderForm" onsubmit="submitOrder(event)">
-                <div class="form-group">
-                    <label>الاسم الكامل *</label>
-                    <input type="text" id="customerName" required placeholder="أدخل اسمك الكامل">
-                </div>
-                <div class="form-group">
-                    <label>رقم الهاتف * (يبدأ بـ 07)</label>
-                    <input type="tel" id="customerPhone" required placeholder="07xxxxxxxx" pattern="07[0-9]{8}" maxlength="10">
-                </div>
-                <div class="form-group">
-                    <label>المحافظة *</label>
-                    <select id="customerCity" required>
-                        <option value="">اختر المحافظة</option>
-                        <option value="عمان">عمان</option>
-                        <option value="الزرقاء">الزرقاء</option>
-                        <option value="إربد">إربد</option>
-                        <option value="الشمال">الشمال</option>
-                        <option value="الجنوب">الجنوب</option>
-                        <option value="الكرك">الكرك</option>
-                        <option value="مادبا">مادبا</option>
-                        <option value="جرش">جرش</option>
-                        <option value="عجلون">عجلون</option>
-                        <option value="معان">معان</option>
-                        <option value="الطفيلة">الطفيلة</option>
-                        <option value="السلط">السلط</option>
-                        <option value="أخرى">أخرى</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>وصف العنوان بالتفصيل *</label>
-                    <textarea id="customerAddress" required placeholder="اكتب عنوانك بالتفصيل (المنطقة، الشارع، أقرب معلم...)"></textarea>
-                </div>
-                <div class="order-summary">
-                    <h4>📋 ملخص الطلبية</h4>
-                    <div id="orderSummaryItems"></div>
-                    <div class="summary-total"><span>الإجمالي الكلي:</span><span id="orderSummaryTotal">0 دينار</span></div>
-                </div>
-                <button type="submit" class="submit-order-btn"><i class="fab fa-whatsapp"></i> إرسال الطلبية عبر واتساب</button>
-            </form>
-        </div>
-    </div>
-    <div class="toast" id="toast"></div>
-    <script>
+<div class="topbar">
+<div class="topbar-logo">
+<img src="https://github.com/basheer-49/CCM/blob/main/%D9%84%D9%8A%D9%86%D9%83%D9%8A%D8%AF%20%D8%A7%D9%86%20%D8%A8%D8%A7%D9%86%D8%B1%20(1080%20x%201080%20px)%20(3).png?raw=true" alt="logo">
+<span>WRAP OFFER</span>
+</div>
+<div class="topbar-cart" onclick="openEditModal()">
+<i class="fas fa-shopping-bag"></i>
+<span class="badge" id="badge">0</span>
+</div>
+</div>
+<div class="hero">
+<img src="https://github.com/basheer-49/CCM/blob/main/%D9%84%D9%8A%D9%86%D9%83%D9%8A%D8%AF%20%D8%A7%D9%86%20%D8%A8%D8%A7%D9%86%D8%B1%20(1080%20x%201080%20px)%20(3).png?raw=true" class="hero-logo" alt="logo">
+<h1>WRAP OFFER</h1>
+<p>جميع أنواع السكاكر والشوكولاته</p>
+<div class="hero-stats">
+<div class="hero-stat"><div class="num" id="stat1">0</div><div class="lbl">زيارة</div></div>
+<div class="hero-stat"><div class="num" id="stat2">0</div><div class="lbl">متجر</div></div>
+<div class="hero-stat"><div class="num" id="stat3">0</div><div class="lbl">طلبية</div></div>
+<div class="hero-stat"><div class="num" id="stat4">0</div><div class="lbl">صنف</div></div>
+</div>
+</div>
+<div class="products">
+<h2>🍬 منتجاتنا</h2>
+<div class="grid" id="grid">
+<div class="card"><img src="https://albadeel.org/wp-content/uploads/2023/11/%D8%A8%D8%A7%D9%88%D9%86%D8%AA%D9%8A-Bounty.webp" class="card-img" alt="باونتي" loading="lazy" onerror="this.src='https://via.placeholder.com/150x100/FFD700/333?text=%F0%9F%8D%AC'"><div class="card-body"><div class="card-name">باونتي</div><div class="card-price">11.5 د.أ</div><div class="card-pack">📦 24</div><div class="qty-row"><button class="qty-btn" onclick="changeQty(0,-1)">−</button><span class="qty-num" id="qty_0">0</span><button class="qty-btn" onclick="changeQty(0,1)">+</button></div><button class="add-btn" id="btn_0" onclick="addCart(0)"><i class="fas fa-plus"></i> إضافة</button></div></div><div class="card"><img src="https://www.kinder.com/ma/sites/kinder_ma/files/2025-12/bueno-t2.png?t=1781102821" class="card-img" alt="كيندر بوينو" loading="lazy" onerror="this.src='https://via.placeholder.com/150x100/FFD700/333?text=%F0%9F%8D%AC'"><div class="card-body"><div class="card-name">كيندر بوينو</div><div class="card-price">17.5 د.أ</div><div class="card-pack">📦 30</div><div class="qty-row"><button class="qty-btn" onclick="changeQty(1,-1)">−</button><span class="qty-num" id="qty_1">0</span><button class="qty-btn" onclick="changeQty(1,1)">+</button></div><button class="add-btn" id="btn_1" onclick="addCart(1)"><i class="fas fa-plus"></i> إضافة</button></div></div><div class="card"><img src="https://bazar-center.com/249600-large_default/%D9%83%D9%86%D8%AF%D8%B1_%D9%85%D8%A7%D9%83%D8%B3_%D8%A7%D8%B5%D8%A7%D8%A8%D8%B9_%D8%B4%D9%88%D9%83%D9%88%D9%84%D8%A7%D8%AA%D9%87_21_%D8%BA%D9%85__36.jpg" class="card-img" alt="كيندر ماكس" loading="lazy" onerror="this.src='https://via.placeholder.com/150x100/FFD700/333?text=%F0%9F%8D%AC'"><div class="card-body"><div class="card-name">كيندر ماكس</div><div class="card-price">7.75 د.أ</div><div class="card-pack">📦 36</div><div class="qty-row"><button class="qty-btn" onclick="changeQty(2,-1)">−</button><span class="qty-num" id="qty_2">0</span><button class="qty-btn" onclick="changeQty(2,1)">+</button></div><button class="add-btn" id="btn_2" onclick="addCart(2)"><i class="fas fa-plus"></i> إضافة</button></div></div><div class="card"><img src="https://m.media-amazon.com/images/I/71jGx0kh+aL._AC_UF894,1000_QL80_.jpg" class="card-img" alt="كندر t8" loading="lazy" onerror="this.src='https://via.placeholder.com/150x100/FFD700/333?text=%F0%9F%8D%AC'"><div class="card-body"><div class="card-name">كندر t8</div><div class="card-price">استفسار</div><div class="card-pack"></div><div class="qty-row"><button class="qty-btn" onclick="changeQty(3,-1)">−</button><span class="qty-num" id="qty_3">0</span><button class="qty-btn" onclick="changeQty(3,1)">+</button></div><button class="add-btn" id="btn_3" onclick="addCart(3)"><i class="fas fa-plus"></i> إضافة</button></div></div><div class="card"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS5VBPAdtWMy6607BsiqS3b1RwWXy8sXqeWFtO33VHgug&s" class="card-img" alt="كيتكات 2 اصبع" loading="lazy" onerror="this.src='https://via.placeholder.com/150x100/FFD700/333?text=%F0%9F%8D%AC'"><div class="card-body"><div class="card-name">كيتكات 2 اصبع</div><div class="card-price">2.75 د.أ</div><div class="card-pack">📦 10</div><div class="qty-row"><button class="qty-btn" onclick="changeQty(4,-1)">−</button><span class="qty-num" id="qty_4">0</span><button class="qty-btn" onclick="changeQty(4,1)">+</button></div><button class="add-btn" id="btn_4" onclick="addCart(4)"><i class="fas fa-plus"></i> إضافة</button></div></div><div class="card"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2L445KEbiXdQEN5fVesYqMUxyLoVseyMXDVM6y1p7i3V0HAtEbeisSFE&s=10" class="card-img" alt="تويرل" loading="lazy" onerror="this.src='https://via.placeholder.com/150x100/FFD700/333?text=%F0%9F%8D%AC'"><div class="card-body"><div class="card-name">تويرل</div><div class="card-price">36.0 د.أ</div><div class="card-pack">📦 48</div><div class="qty-row"><button class="qty-btn" onclick="changeQty(5,-1)">−</button><span class="qty-num" id="qty_5">0</span><button class="qty-btn" onclick="changeQty(5,1)">+</button></div><button class="add-btn" id="btn_5" onclick="addCart(5)"><i class="fas fa-plus"></i> إضافة</button></div></div><div class="card"><img src="https://img.ananinja.com/media/ninja-catalog-42/Banmaly/5000159020312_1.png?w=3840&q=75" class="card-img" alt="ملتيزر" loading="lazy" onerror="this.src='https://via.placeholder.com/150x100/FFD700/333?text=%F0%9F%8D%AC'"><div class="card-body"><div class="card-name">ملتيزر</div><div class="card-price">16.0 د.أ</div><div class="card-pack">📦 25</div><div class="qty-row"><button class="qty-btn" onclick="changeQty(6,-1)">−</button><span class="qty-num" id="qty_6">0</span><button class="qty-btn" onclick="changeQty(6,1)">+</button></div><button class="add-btn" id="btn_6" onclick="addCart(6)"><i class="fas fa-plus"></i> إضافة</button></div></div><div class="card"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtf-Ztarm2d28k5CgGpHKNFdD8Xkq7_9WTU61SEQUc8w&s=10" class="card-img" alt="M&M صفر" loading="lazy" onerror="this.src='https://via.placeholder.com/150x100/FFD700/333?text=%F0%9F%8D%AC'"><div class="card-body"><div class="card-name">M&M صفر</div><div class="card-price">13.25 د.أ</div><div class="card-pack">📦 24</div><div class="qty-row"><button class="qty-btn" onclick="changeQty(7,-1)">−</button><span class="qty-num" id="qty_7">0</span><button class="qty-btn" onclick="changeQty(7,1)">+</button></div><button class="add-btn" id="btn_7" onclick="addCart(7)"><i class="fas fa-plus"></i> إضافة</button></div></div><div class="card"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR7x1OOrQX6UfMVe5DsBiAmskjQCRhbeHMp4884Hzac7Q&s=10" class="card-img" alt="LAION CHOCLET" loading="lazy" onerror="this.src='https://via.placeholder.com/150x100/FFD700/333?text=%F0%9F%8D%AC'"><div class="card-body"><div class="card-name">LAION CHOCLET</div><div class="card-price">18.0 د.أ</div><div class="card-pack">📦 40</div><div class="qty-row"><button class="qty-btn" onclick="changeQty(8,-1)">−</button><span class="qty-num" id="qty_8">0</span><button class="qty-btn" onclick="changeQty(8,1)">+</button></div><button class="add-btn" id="btn_8" onclick="addCart(8)"><i class="fas fa-plus"></i> إضافة</button></div></div><div class="card"><img src="https://images.deliveryhero.io/image/darkstores/nv-global-catalog/jo/a3bbfeef-759e-4dd4-95bd-e539c246c83d.JPG" class="card-img" alt="بوظة اوزمو" loading="lazy" onerror="this.src='https://via.placeholder.com/150x100/FFD700/333?text=%F0%9F%8D%AC'"><div class="card-body"><div class="card-name">بوظة اوزمو</div><div class="card-price">7.0 د.أ</div><div class="card-pack">📦 24</div><div class="qty-row"><button class="qty-btn" onclick="changeQty(9,-1)">−</button><span class="qty-num" id="qty_9">0</span><button class="qty-btn" onclick="changeQty(9,1)">+</button></div><button class="add-btn" id="btn_9" onclick="addCart(9)"><i class="fas fa-plus"></i> إضافة</button></div></div><div class="card"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjEeHaIO8UfQN1V2Yu2v1IyrTif0pffr-AVlGJSTa_Cb-nPsI6EuFhD1s&s=10" class="card-img" alt="سيليبريشن" loading="lazy" onerror="this.src='https://via.placeholder.com/150x100/FFD700/333?text=%F0%9F%8D%AC'"><div class="card-body"><div class="card-name">سيليبريشن</div><div class="card-price">6.5 د.أ</div><div class="card-pack">📦 10</div><div class="qty-row"><button class="qty-btn" onclick="changeQty(10,-1)">−</button><span class="qty-num" id="qty_10">0</span><button class="qty-btn" onclick="changeQty(10,1)">+</button></div><button class="add-btn" id="btn_10" onclick="addCart(10)"><i class="fas fa-plus"></i> إضافة</button></div></div><div class="card"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSbgVUPVjPzjFk27IEUnxd2t2bgXRCVUEfLYYv-NJ4KAw&s" class="card-img" alt="بديل الكندر بوينو" loading="lazy" onerror="this.src='https://via.placeholder.com/150x100/FFD700/333?text=%F0%9F%8D%AC'"><div class="card-body"><div class="card-name">بديل الكندر بوينو</div><div class="card-price">5.5 د.أ</div><div class="card-pack">📦 24</div><div class="qty-row"><button class="qty-btn" onclick="changeQty(11,-1)">−</button><span class="qty-num" id="qty_11">0</span><button class="qty-btn" onclick="changeQty(11,1)">+</button></div><button class="add-btn" id="btn_11" onclick="addCart(11)"><i class="fas fa-plus"></i> إضافة</button></div></div><div class="card"><img src="https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQY0kbq_DdAI9tR1dhiN0WZiJE9Pb0pP-lCyzxuk7166Jl6d1PI" class="card-img" alt="بديل الباونتي" loading="lazy" onerror="this.src='https://via.placeholder.com/150x100/FFD700/333?text=%F0%9F%8D%AC'"><div class="card-body"><div class="card-name">بديل الباونتي</div><div class="card-price">6.0 د.أ</div><div class="card-pack">📦 24</div><div class="qty-row"><button class="qty-btn" onclick="changeQty(12,-1)">−</button><span class="qty-num" id="qty_12">0</span><button class="qty-btn" onclick="changeQty(12,1)">+</button></div><button class="add-btn" id="btn_12" onclick="addCart(12)"><i class="fas fa-plus"></i> إضافة</button></div></div><div class="card"><img src="https://media.zid.store/thumbs/48e9fdba-af4f-440b-95a2-e566d61d5ac2/d7472c78-bf53-4e76-8691-dc839d75b281-thumbnail-500x500.PNG" class="card-img" alt="بركات ليل" loading="lazy" onerror="this.src='https://via.placeholder.com/150x100/FFD700/333?text=%F0%9F%8D%AC'"><div class="card-body"><div class="card-name">بركات ليل</div><div class="card-price">2.75 د.أ</div><div class="card-pack">📦 12</div><div class="qty-row"><button class="qty-btn" onclick="changeQty(13,-1)">−</button><span class="qty-num" id="qty_13">0</span><button class="qty-btn" onclick="changeQty(13,1)">+</button></div><button class="add-btn" id="btn_13" onclick="addCart(13)"><i class="fas fa-plus"></i> إضافة</button></div></div><div class="card"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSoSmuq8OuWJNF9Gc8WFY8ek-GkzJqVJ1idxXBuRirWhA&s=10" class="card-img" alt="بركات دوبينجو" loading="lazy" onerror="this.src='https://via.placeholder.com/150x100/FFD700/333?text=%F0%9F%8D%AC'"><div class="card-body"><div class="card-name">بركات دوبينجو</div><div class="card-price">2.75 د.أ</div><div class="card-pack">📦 12</div><div class="qty-row"><button class="qty-btn" onclick="changeQty(14,-1)">−</button><span class="qty-num" id="qty_14">0</span><button class="qty-btn" onclick="changeQty(14,1)">+</button></div><button class="add-btn" id="btn_14" onclick="addCart(14)"><i class="fas fa-plus"></i> إضافة</button></div></div><div class="card"><img src="https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRwTt_Q7wmILrIYPbRo4EHLczhrlSnhbYh5w1EgTUsNxMP_968e" class="card-img" alt="بركات كاجي" loading="lazy" onerror="this.src='https://via.placeholder.com/150x100/FFD700/333?text=%F0%9F%8D%AC'"><div class="card-body"><div class="card-name">بركات كاجي</div><div class="card-price">6.5 د.أ</div><div class="card-pack">📦 24</div><div class="qty-row"><button class="qty-btn" onclick="changeQty(15,-1)">−</button><span class="qty-num" id="qty_15">0</span><button class="qty-btn" onclick="changeQty(15,1)">+</button></div><button class="add-btn" id="btn_15" onclick="addCart(15)"><i class="fas fa-plus"></i> إضافة</button></div></div><div class="card"><img src="https://cdn.salla.sa/BrBYGy/cf8ce423-4070-42d4-834f-88db1e9ee45a-746.66666666667x1000-fDThi4p1Asce0pTQ0d7GhKCheZ8GJFct7RCW4FKf.png" class="card-img" alt="مارشميلو حلا" loading="lazy" onerror="this.src='https://via.placeholder.com/150x100/FFD700/333?text=%F0%9F%8D%AC'"><div class="card-body"><div class="card-name">مارشميلو حلا</div><div class="card-price">0.85 د.أ</div><div class="card-pack">📦 12</div><div class="qty-row"><button class="qty-btn" onclick="changeQty(16,-1)">−</button><span class="qty-num" id="qty_16">0</span><button class="qty-btn" onclick="changeQty(16,1)">+</button></div><button class="add-btn" id="btn_16" onclick="addCart(16)"><i class="fas fa-plus"></i> إضافة</button></div></div><div class="card"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQ0WDqt4VJaScz3bF18UugkmgXg214H8gNuq4sEeQlKFT-ajzUvRcQmrU&s=10" class="card-img" alt="مشروب غازي ZERO" loading="lazy" onerror="this.src='https://via.placeholder.com/150x100/FFD700/333?text=%F0%9F%8D%AC'"><div class="card-body"><div class="card-name">مشروب غازي ZERO</div><div class="card-price">0.75 د.أ</div><div class="card-pack">📦 24</div><div class="qty-row"><button class="qty-btn" onclick="changeQty(17,-1)">−</button><span class="qty-num" id="qty_17">0</span><button class="qty-btn" onclick="changeQty(17,1)">+</button></div><button class="add-btn" id="btn_17" onclick="addCart(17)"><i class="fas fa-plus"></i> إضافة</button></div></div><div class="card"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRj0XcqeA1A6RdApI69Rnp2ZieqJWjj77_7osudSqPKJQ&s=10" class="card-img" alt="مشروب طاقة SURGE" loading="lazy" onerror="this.src='https://via.placeholder.com/150x100/FFD700/333?text=%F0%9F%8D%AC'"><div class="card-body"><div class="card-name">مشروب طاقة SURGE</div><div class="card-price">5.5 د.أ</div><div class="card-pack">📦 24</div><div class="qty-row"><button class="qty-btn" onclick="changeQty(18,-1)">−</button><span class="qty-num" id="qty_18">0</span><button class="qty-btn" onclick="changeQty(18,1)">+</button></div><button class="add-btn" id="btn_18" onclick="addCart(18)"><i class="fas fa-plus"></i> إضافة</button></div></div><div class="card"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS9pIOKjufPCnDRlLR8MfPj6bRbGVGMpBIKXcaGGyOctQ&s=10" class="card-img" alt="مشروب طاقة فريجو" loading="lazy" onerror="this.src='https://via.placeholder.com/150x100/FFD700/333?text=%F0%9F%8D%AC'"><div class="card-body"><div class="card-name">مشروب طاقة فريجو</div><div class="card-price">7.0 د.أ</div><div class="card-pack">📦 24</div><div class="qty-row"><button class="qty-btn" onclick="changeQty(19,-1)">−</button><span class="qty-num" id="qty_19">0</span><button class="qty-btn" onclick="changeQty(19,1)">+</button></div><button class="add-btn" id="btn_19" onclick="addCart(19)"><i class="fas fa-plus"></i> إضافة</button></div></div><div class="card"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQDxpu7FXIzb3spHj2mGV8sieEKuANiMDDmNxfx1i0xBCpBCE3gb8AL2So&s=10" class="card-img" alt="بانينو حلل" loading="lazy" onerror="this.src='https://via.placeholder.com/150x100/FFD700/333?text=%F0%9F%8D%AC'"><div class="card-body"><div class="card-name">بانينو حلل</div><div class="card-price">28.5 د.أ</div><div class="card-pack">📦 6 كيلو</div><div class="qty-row"><button class="qty-btn" onclick="changeQty(20,-1)">−</button><span class="qty-num" id="qty_20">0</span><button class="qty-btn" onclick="changeQty(20,1)">+</button></div><button class="add-btn" id="btn_20" onclick="addCart(20)"><i class="fas fa-plus"></i> إضافة</button></div></div><div class="card"><img src="رhttps://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTN-CW4rdupFEHwOVbePXCSmZA6yqsKxKC8PjvTPPMHXUUDwuGAmDPL3LKS&s=10" class="card-img" alt="بانينو سوجار" loading="lazy" onerror="this.src='https://via.placeholder.com/150x100/FFD700/333?text=%F0%9F%8D%AC'"><div class="card-body"><div class="card-name">بانينو سوجار</div><div class="card-price">5.5 د.أ</div><div class="card-pack">📦 24</div><div class="qty-row"><button class="qty-btn" onclick="changeQty(21,-1)">−</button><span class="qty-num" id="qty_21">0</span><button class="qty-btn" onclick="changeQty(21,1)">+</button></div><button class="add-btn" id="btn_21" onclick="addCart(21)"><i class="fas fa-plus"></i> إضافة</button></div></div><div class="card"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR1dpelgp5qq7kkbh2Vd-jnh26lot83B9uhNBE0ZNoUqQ&s=10" class="card-img" alt="اندومي كوري" loading="lazy" onerror="this.src='https://via.placeholder.com/150x100/FFD700/333?text=%F0%9F%8D%AC'"><div class="card-body"><div class="card-name">اندومي كوري</div><div class="card-price">0.45 د.أ</div><div class="card-pack">📦 40</div><div class="qty-row"><button class="qty-btn" onclick="changeQty(22,-1)">−</button><span class="qty-num" id="qty_22">0</span><button class="qty-btn" onclick="changeQty(22,1)">+</button></div><button class="add-btn" id="btn_22" onclick="addCart(22)"><i class="fas fa-plus"></i> إضافة</button></div></div><div class="card"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRt1FXQ2RlKn0MAyOECy6T8GugpELG7QEQfS_RtJD-7zQ&s=10" class="card-img" alt="ميني شورز مارس و سنكرز" loading="lazy" onerror="this.src='https://via.placeholder.com/150x100/FFD700/333?text=%F0%9F%8D%AC'"><div class="card-body"><div class="card-name">ميني شورز مارس و سنكرز</div><div class="card-price">85.0 د.أ</div><div class="card-pack">📦 10 كيلو</div><div class="qty-row"><button class="qty-btn" onclick="changeQty(23,-1)">−</button><span class="qty-num" id="qty_23">0</span><button class="qty-btn" onclick="changeQty(23,1)">+</button></div><button class="add-btn" id="btn_23" onclick="addCart(23)"><i class="fas fa-plus"></i> إضافة</button></div></div><div class="card"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRPxOJTrbiGc1dr89cBW0nXpd0qdgR0w-1kLoQkLmqkWQ&s=10" class="card-img" alt="علكة لواكر" loading="lazy" onerror="this.src='https://via.placeholder.com/150x100/FFD700/333?text=%F0%9F%8D%AC'"><div class="card-body"><div class="card-name">علكة لواكر</div><div class="card-price">0.31 د.أ</div><div class="card-pack"></div><div class="qty-row"><button class="qty-btn" onclick="changeQty(24,-1)">−</button><span class="qty-num" id="qty_24">0</span><button class="qty-btn" onclick="changeQty(24,1)">+</button></div><button class="add-btn" id="btn_24" onclick="addCart(24)"><i class="fas fa-plus"></i> إضافة</button></div></div><div class="card"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSy6tS8vaSrlosZYjruuRnzY09xe2eWlh9inSMcVXy65Q&s=10" class="card-img" alt="مينتوس لواكر" loading="lazy" onerror="this.src='https://via.placeholder.com/150x100/FFD700/333?text=%F0%9F%8D%AC'"><div class="card-body"><div class="card-name">مينتوس لواكر</div><div class="card-price">استفسار</div><div class="card-pack"></div><div class="qty-row"><button class="qty-btn" onclick="changeQty(25,-1)">−</button><span class="qty-num" id="qty_25">0</span><button class="qty-btn" onclick="changeQty(25,1)">+</button></div><button class="add-btn" id="btn_25" onclick="addCart(25)"><i class="fas fa-plus"></i> إضافة</button></div></div><div class="card"><img src="https://neocart.ae/cdn/shop/products/Kingegg-01_600x.jpg?v=1676436574" class="card-img" alt="بيض بلاستيك" loading="lazy" onerror="this.src='https://via.placeholder.com/150x100/FFD700/333?text=%F0%9F%8D%AC'"><div class="card-body"><div class="card-name">بيض بلاستيك</div><div class="card-price">5.0 د.أ</div><div class="card-pack">📦 24</div><div class="qty-row"><button class="qty-btn" onclick="changeQty(26,-1)">−</button><span class="qty-num" id="qty_26">0</span><button class="qty-btn" onclick="changeQty(26,1)">+</button></div><button class="add-btn" id="btn_26" onclick="addCart(26)"><i class="fas fa-plus"></i> إضافة</button></div></div><div class="card"><img src="https://f.nooncdn.com/p/v1558702227/N26097731A_1.jpg?width=800" class="card-img" alt="بيض ديناصور" loading="lazy" onerror="this.src='https://via.placeholder.com/150x100/FFD700/333?text=%F0%9F%8D%AC'"><div class="card-body"><div class="card-name">بيض ديناصور</div><div class="card-price">5.0 د.أ</div><div class="card-pack">📦 24</div><div class="qty-row"><button class="qty-btn" onclick="changeQty(27,-1)">−</button><span class="qty-num" id="qty_27">0</span><button class="qty-btn" onclick="changeQty(27,1)">+</button></div><button class="add-btn" id="btn_27" onclick="addCart(27)"><i class="fas fa-plus"></i> إضافة</button></div></div><div class="card"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS9nF_9gR4kKQi-v5IKZOjeWQ306myBqI5EYdGzP3DWRzkxmnGZGU5E7fk&s=10" class="card-img" alt="بيض اللابوبو" loading="lazy" onerror="this.src='https://via.placeholder.com/150x100/FFD700/333?text=%F0%9F%8D%AC'"><div class="card-body"><div class="card-name">بيض اللابوبو</div><div class="card-price">5.0 د.أ</div><div class="card-pack"></div><div class="qty-row"><button class="qty-btn" onclick="changeQty(28,-1)">−</button><span class="qty-num" id="qty_28">0</span><button class="qty-btn" onclick="changeQty(28,1)">+</button></div><button class="add-btn" id="btn_28" onclick="addCart(28)"><i class="fas fa-plus"></i> إضافة</button></div></div><div class="card"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTeZnkSQobbskevSGPmXPGPVAX55q1stm-ZZhA4iDlchg&s" class="card-img" alt="بيض ماستر ترند" loading="lazy" onerror="this.src='https://via.placeholder.com/150x100/FFD700/333?text=%F0%9F%8D%AC'"><div class="card-body"><div class="card-name">بيض ماستر ترند</div><div class="card-price">5.0 د.أ</div><div class="card-pack">📦 24</div><div class="qty-row"><button class="qty-btn" onclick="changeQty(29,-1)">−</button><span class="qty-num" id="qty_29">0</span><button class="qty-btn" onclick="changeQty(29,1)">+</button></div><button class="add-btn" id="btn_29" onclick="addCart(29)"><i class="fas fa-plus"></i> إضافة</button></div></div><div class="card"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTkm754peNfKoGAcgQHaP4Ww_G2dGJl-6azbix0QOmR_g&s=10" class="card-img" alt="العاب هدايا حبات النص" loading="lazy" onerror="this.src='https://via.placeholder.com/150x100/FFD700/333?text=%F0%9F%8D%AC'"><div class="card-body"><div class="card-name">العاب هدايا حبات النص</div><div class="card-price">10.0 د.أ</div><div class="card-pack"></div><div class="qty-row"><button class="qty-btn" onclick="changeQty(30,-1)">−</button><span class="qty-num" id="qty_30">0</span><button class="qty-btn" onclick="changeQty(30,1)">+</button></div><button class="add-btn" id="btn_30" onclick="addCart(30)"><i class="fas fa-plus"></i> إضافة</button></div></div><div class="card"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTkm754peNfKoGAcgQHaP4Ww_G2dGJl-6azbix0QOmR_g&s=10" class="card-img" alt="العاب هدايا حبات الدينار" loading="lazy" onerror="this.src='https://via.placeholder.com/150x100/FFD700/333?text=%F0%9F%8D%AC'"><div class="card-body"><div class="card-name">العاب هدايا حبات الدينار</div><div class="card-price">10.0 د.أ</div><div class="card-pack"></div><div class="qty-row"><button class="qty-btn" onclick="changeQty(31,-1)">−</button><span class="qty-num" id="qty_31">0</span><button class="qty-btn" onclick="changeQty(31,1)">+</button></div><button class="add-btn" id="btn_31" onclick="addCart(31)"><i class="fas fa-plus"></i> إضافة</button></div></div><div class="card"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRWjJTFofH7_oDKRFM5a_NLwj0HNtgS3aSi_Nx5zkl5_YC4D5PQrT1GUlc1&s=10" class="card-img" alt="البينا لواكر" loading="lazy" onerror="this.src='https://via.placeholder.com/150x100/FFD700/333?text=%F0%9F%8D%AC'"><div class="card-body"><div class="card-name">البينا لواكر</div><div class="card-price">7.0 د.أ</div><div class="card-pack"></div><div class="qty-row"><button class="qty-btn" onclick="changeQty(32,-1)">−</button><span class="qty-num" id="qty_32">0</span><button class="qty-btn" onclick="changeQty(32,1)">+</button></div><button class="add-btn" id="btn_32" onclick="addCart(32)"><i class="fas fa-plus"></i> إضافة</button></div></div><div class="card"><img src="nan" class="card-img" alt="جميع أنواع الحمضيات حبات الدينار" loading="lazy" onerror="this.src='https://via.placeholder.com/150x100/FFD700/333?text=%F0%9F%8D%AC'"><div class="card-body"><div class="card-name">جميع أنواع الحمضيات حبات الدينار</div><div class="card-price">9.5 د.أ</div><div class="card-pack"></div><div class="qty-row"><button class="qty-btn" onclick="changeQty(33,-1)">−</button><span class="qty-num" id="qty_33">0</span><button class="qty-btn" onclick="changeQty(33,1)">+</button></div><button class="add-btn" id="btn_33" onclick="addCart(33)"><i class="fas fa-plus"></i> إضافة</button></div></div><div class="card"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTV2kU4y_a_9_T1DwsfAnuLURis0I7sSKZQHyymwv4RoA&s=10" class="card-img" alt="مالتيزر ارنب" loading="lazy" onerror="this.src='https://via.placeholder.com/150x100/FFD700/333?text=%F0%9F%8D%AC'"><div class="card-body"><div class="card-name">مالتيزر ارنب</div><div class="card-price">15.6 د.أ</div><div class="card-pack"></div><div class="qty-row"><button class="qty-btn" onclick="changeQty(34,-1)">−</button><span class="qty-num" id="qty_34">0</span><button class="qty-btn" onclick="changeQty(34,1)">+</button></div><button class="add-btn" id="btn_34" onclick="addCart(34)"><i class="fas fa-plus"></i> إضافة</button></div></div><div class="card"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSY4kqZOjDoJq2hLEJTEqLjkEKPywSqJZBbq_TMUXbXtA&s" class="card-img" alt="مالتيزر بار" loading="lazy" onerror="this.src='https://via.placeholder.com/150x100/FFD700/333?text=%F0%9F%8D%AC'"><div class="card-body"><div class="card-name">مالتيزر بار</div><div class="card-price">18.0 د.أ</div><div class="card-pack"></div><div class="qty-row"><button class="qty-btn" onclick="changeQty(35,-1)">−</button><span class="qty-num" id="qty_35">0</span><button class="qty-btn" onclick="changeQty(35,1)">+</button></div><button class="add-btn" id="btn_35" onclick="addCart(35)"><i class="fas fa-plus"></i> إضافة</button></div></div><div class="card"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ-HK8v3kC_ktcS3CjyuFTEjChT2syTUxzS2tped9lKow&s=10" class="card-img" alt="ترمس" loading="lazy" onerror="this.src='https://via.placeholder.com/150x100/FFD700/333?text=%F0%9F%8D%AC'"><div class="card-body"><div class="card-name">ترمس</div><div class="card-price">10.0 د.أ</div><div class="card-pack">📦 10</div><div class="qty-row"><button class="qty-btn" onclick="changeQty(36,-1)">−</button><span class="qty-num" id="qty_36">0</span><button class="qty-btn" onclick="changeQty(36,1)">+</button></div><button class="add-btn" id="btn_36" onclick="addCart(36)"><i class="fas fa-plus"></i> إضافة</button></div></div><div class="card"><img src="https://bazar-center.com/249356-large_default/%D9%85%D9%84%D9%83%D8%A7_%D8%A7%D9%84%D9%88%D8%A7%D8%AD_%D8%B4%D9%88%D9%83%D9%88%D9%84%D8%A7%D8%AA%D9%87_%D8%A8%D8%A7%D9%84%D8%AD%D9%84%D9%8A%D8%A8_%D9%85%D8%B9_%D8%A7%D9%84%D8%B2%D8%A8%D9%8A%D8%A8__100_%D8%BA%D9%85__22.jpg" class="card-img" alt="ميلكا الواح" loading="lazy" onerror="this.src='https://via.placeholder.com/150x100/FFD700/333?text=%F0%9F%8D%AC'"><div class="card-body"><div class="card-name">ميلكا الواح</div><div class="card-price">0.85 د.أ</div><div class="card-pack"></div><div class="qty-row"><button class="qty-btn" onclick="changeQty(37,-1)">−</button><span class="qty-num" id="qty_37">0</span><button class="qty-btn" onclick="changeQty(37,1)">+</button></div><button class="add-btn" id="btn_37" onclick="addCart(37)"><i class="fas fa-plus"></i> إضافة</button></div></div><div class="card"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRRdHvp28HfNbb8VuyeQOjzy3nNslH-fn0LUyA5bsDTwA&s=10" class="card-img" alt="شوكو برنس" loading="lazy" onerror="this.src='https://via.placeholder.com/150x100/FFD700/333?text=%F0%9F%8D%AC'"><div class="card-body"><div class="card-name">شوكو برنس</div><div class="card-price">11.25 د.أ</div><div class="card-pack">📦 40</div><div class="qty-row"><button class="qty-btn" onclick="changeQty(38,-1)">−</button><span class="qty-num" id="qty_38">0</span><button class="qty-btn" onclick="changeQty(38,1)">+</button></div><button class="add-btn" id="btn_38" onclick="addCart(38)"><i class="fas fa-plus"></i> إضافة</button></div></div><div class="card"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQEFCq457VBPrpsgZZkhBgLa51VIZcUgklUrz2Cq4it8w&s" class="card-img" alt="فليك" loading="lazy" onerror="this.src='https://via.placeholder.com/150x100/FFD700/333?text=%F0%9F%8D%AC'"><div class="card-body"><div class="card-name">فليك</div><div class="card-price">7.75 د.أ</div><div class="card-pack">📦 36</div><div class="qty-row"><button class="qty-btn" onclick="changeQty(39,-1)">−</button><span class="qty-num" id="qty_39">0</span><button class="qty-btn" onclick="changeQty(39,1)">+</button></div><button class="add-btn" id="btn_39" onclick="addCart(39)"><i class="fas fa-plus"></i> إضافة</button></div></div><div class="card"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ1rpnv5NC8sqcWfKwe5jsdJJLspVYuOPzCDg_F5TSjtA&s=10" class="card-img" alt="بابلي" loading="lazy" onerror="this.src='https://via.placeholder.com/150x100/FFD700/333?text=%F0%9F%8D%AC'"><div class="card-body"><div class="card-name">بابلي</div><div class="card-price">3.25 د.أ</div><div class="card-pack">📦 12</div><div class="qty-row"><button class="qty-btn" onclick="changeQty(40,-1)">−</button><span class="qty-num" id="qty_40">0</span><button class="qty-btn" onclick="changeQty(40,1)">+</button></div><button class="add-btn" id="btn_40" onclick="addCart(40)"><i class="fas fa-plus"></i> إضافة</button></div></div><div class="card"><img src="https://cdn.salla.sa/AzAbWD/a71f4fd0-c11f-4093-beff-dfb4d2b010b3-1000x1000-VIpjmKKVZKKHo2Jyo8eYWVJpLBTbUXOdQ4SuDD8X.jpg" class="card-img" alt="سنكرز" loading="lazy" onerror="this.src='https://via.placeholder.com/150x100/FFD700/333?text=%F0%9F%8D%AC'"><div class="card-body"><div class="card-name">سنكرز</div><div class="card-price">4.3 د.أ</div><div class="card-pack">📦 10 حبات</div><div class="qty-row"><button class="qty-btn" onclick="changeQty(41,-1)">−</button><span class="qty-num" id="qty_41">0</span><button class="qty-btn" onclick="changeQty(41,1)">+</button></div><button class="add-btn" id="btn_41" onclick="addCart(41)"><i class="fas fa-plus"></i> إضافة</button></div></div><div class="card"><img src="https://www.broadwaycandy.com/cdn/shop/files/s-l1200.jpg?v=1724844285" class="card-img" alt="M&M بني" loading="lazy" onerror="this.src='https://via.placeholder.com/150x100/FFD700/333?text=%F0%9F%8D%AC'"><div class="card-body"><div class="card-name">M&M بني</div><div class="card-price">13.25 د.أ</div><div class="card-pack">📦 24</div><div class="qty-row"><button class="qty-btn" onclick="changeQty(42,-1)">−</button><span class="qty-num" id="qty_42">0</span><button class="qty-btn" onclick="changeQty(42,1)">+</button></div><button class="add-btn" id="btn_42" onclick="addCart(42)"><i class="fas fa-plus"></i> إضافة</button></div></div><div class="card"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbbGa4Oh9oO3pTmbE5ETll921nZDA5oK_tXCxLJhT-tQ&s=10" class="card-img" alt="بي ردي نوتلا" loading="lazy" onerror="this.src='https://via.placeholder.com/150x100/FFD700/333?text=%F0%9F%8D%AC'"><div class="card-body"><div class="card-name">بي ردي نوتلا</div><div class="card-price">استفسار</div><div class="card-pack"></div><div class="qty-row"><button class="qty-btn" onclick="changeQty(43,-1)">−</button><span class="qty-num" id="qty_43">0</span><button class="qty-btn" onclick="changeQty(43,1)">+</button></div><button class="add-btn" id="btn_43" onclick="addCart(43)"><i class="fas fa-plus"></i> إضافة</button></div></div><div class="card"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQLX_TmYsHxOEjzUizvVIy3oV82O9uvF_3_ouCpPO2x-Q&s=10" class="card-img" alt="فريرو روشيه" loading="lazy" onerror="this.src='https://via.placeholder.com/150x100/FFD700/333?text=%F0%9F%8D%AC'"><div class="card-body"><div class="card-name">فريرو روشيه</div><div class="card-price">استفسار</div><div class="card-pack"></div><div class="qty-row"><button class="qty-btn" onclick="changeQty(44,-1)">−</button><span class="qty-num" id="qty_44">0</span><button class="qty-btn" onclick="changeQty(44,1)">+</button></div><button class="add-btn" id="btn_44" onclick="addCart(44)"><i class="fas fa-plus"></i> إضافة</button></div></div>
+</div>
+</div>
 
-        const products = [{"id": 0, "name": "باونتي", "box_price": 11.5, "carton_price": null, "packaging": "24", "image_url": "https://albadeel.org/wp-content/uploads/2023/11/%D8%A8%D8%A7%D9%88%D9%86%D8%AA%D9%8A-Bounty.webp"}, {"id": 1, "name": "كيندر بوينو", "box_price": 17.5, "carton_price": null, "packaging": "30", "image_url": "https://www.kinder.com/ma/sites/kinder_ma/files/2025-12/bueno-t2.png?t=1781102821"}, {"id": 2, "name": "كيندر ماكس", "box_price": 7.75, "carton_price": null, "packaging": "36", "image_url": "https://bazar-center.com/249600-large_default/%D9%83%D9%86%D8%AF%D8%B1_%D9%85%D8%A7%D9%83%D8%B3_%D8%A7%D8%B5%D8%A7%D8%A8%D8%B9_%D8%B4%D9%88%D9%83%D9%88%D9%84%D8%A7%D8%AA%D9%87_21_%D8%BA%D9%85__36.jpg"}, {"id": 3, "name": "كندر t8", "box_price": null, "carton_price": null, "packaging": null, "image_url": "https://m.media-amazon.com/images/I/71jGx0kh+aL._AC_UF894,1000_QL80_.jpg"}, {"id": 4, "name": "كيتكات 2 اصبع", "box_price": 2.75, "carton_price": 33.0, "packaging": "10", "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS5VBPAdtWMy6607BsiqS3b1RwWXy8sXqeWFtO33VHgug&s"}, {"id": 5, "name": "تويرل", "box_price": 36.0, "carton_price": 36.0, "packaging": "48", "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2L445KEbiXdQEN5fVesYqMUxyLoVseyMXDVM6y1p7i3V0HAtEbeisSFE&s=10"}, {"id": 6, "name": "ملتيزر", "box_price": 16.0, "carton_price": null, "packaging": "25", "image_url": "https://img.ananinja.com/media/ninja-catalog-42/Banmaly/5000159020312_1.png?w=3840&q=75"}, {"id": 7, "name": "M&M صفر", "box_price": 13.25, "carton_price": null, "packaging": "24", "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtf-Ztarm2d28k5CgGpHKNFdD8Xkq7_9WTU61SEQUc8w&s=10"}, {"id": 8, "name": "LAION CHOCLET", "box_price": 18.0, "carton_price": null, "packaging": "40", "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR7x1OOrQX6UfMVe5DsBiAmskjQCRhbeHMp4884Hzac7Q&s=10"}, {"id": 9, "name": "بوظة اوزمو", "box_price": 7.0, "carton_price": 42.0, "packaging": "24", "image_url": "https://images.deliveryhero.io/image/darkstores/nv-global-catalog/jo/a3bbfeef-759e-4dd4-95bd-e539c246c83d.JPG"}, {"id": 10, "name": "سيليبريشن", "box_price": 6.5, "carton_price": 65.0, "packaging": "10", "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjEeHaIO8UfQN1V2Yu2v1IyrTif0pffr-AVlGJSTa_Cb-nPsI6EuFhD1s&s=10"}, {"id": 11, "name": "بديل الكندر بوينو", "box_price": 5.5, "carton_price": 33.0, "packaging": "24", "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSbgVUPVjPzjFk27IEUnxd2t2bgXRCVUEfLYYv-NJ4KAw&s"}, {"id": 12, "name": "بديل الباونتي", "box_price": 6.0, "carton_price": 36.0, "packaging": "24", "image_url": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQY0kbq_DdAI9tR1dhiN0WZiJE9Pb0pP-lCyzxuk7166Jl6d1PI"}, {"id": 13, "name": "بركات ليل", "box_price": 2.75, "carton_price": 33.0, "packaging": "12", "image_url": "https://media.zid.store/thumbs/48e9fdba-af4f-440b-95a2-e566d61d5ac2/d7472c78-bf53-4e76-8691-dc839d75b281-thumbnail-500x500.PNG"}, {"id": 14, "name": "بركات دوبينجو", "box_price": 2.75, "carton_price": 33.0, "packaging": "12", "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSoSmuq8OuWJNF9Gc8WFY8ek-GkzJqVJ1idxXBuRirWhA&s=10"}, {"id": 15, "name": "بركات كاجي", "box_price": 6.5, "carton_price": 37.0, "packaging": "24", "image_url": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRwTt_Q7wmILrIYPbRo4EHLczhrlSnhbYh5w1EgTUsNxMP_968e"}, {"id": 16, "name": "مارشميلو حلا", "box_price": 0.85, "carton_price": 10.2, "packaging": "12", "image_url": "https://cdn.salla.sa/BrBYGy/cf8ce423-4070-42d4-834f-88db1e9ee45a-746.66666666667x1000-fDThi4p1Asce0pTQ0d7GhKCheZ8GJFct7RCW4FKf.png"}, {"id": 17, "name": "مشروب غازي ZERO", "box_price": 0.75, "carton_price": 18.0, "packaging": "24", "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQ0WDqt4VJaScz3bF18UugkmgXg214H8gNuq4sEeQlKFT-ajzUvRcQmrU&s=10"}, {"id": 18, "name": "مشروب طاقة SURGE", "box_price": 5.5, "carton_price": null, "packaging": "24", "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRj0XcqeA1A6RdApI69Rnp2ZieqJWjj77_7osudSqPKJQ&s=10"}, {"id": 19, "name": "مشروب طاقة فريجو", "box_price": 7.0, "carton_price": null, "packaging": "24", "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS9pIOKjufPCnDRlLR8MfPj6bRbGVGMpBIKXcaGGyOctQ&s=10"}, {"id": 20, "name": "بانينو حلل", "box_price": null, "carton_price": 28.5, "packaging": "6 كيلو ", "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQDxpu7FXIzb3spHj2mGV8sieEKuANiMDDmNxfx1i0xBCpBCE3gb8AL2So&s=10"}, {"id": 21, "name": "بانينو سوجار", "box_price": 5.5, "carton_price": 33.0, "packaging": "24", "image_url": "رhttps://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTN-CW4rdupFEHwOVbePXCSmZA6yqsKxKC8PjvTPPMHXUUDwuGAmDPL3LKS&s=10"}, {"id": 22, "name": "اندومي كوري", "box_price": 0.45, "carton_price": 18.0, "packaging": "40", "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR1dpelgp5qq7kkbh2Vd-jnh26lot83B9uhNBE0ZNoUqQ&s=10"}, {"id": 23, "name": "ميني شورز مارس و سنكرز", "box_price": null, "carton_price": 85.0, "packaging": "10 كيلو", "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRt1FXQ2RlKn0MAyOECy6T8GugpELG7QEQfS_RtJD-7zQ&s=10"}, {"id": 24, "name": "علكة لواكر", "box_price": 0.31, "carton_price": null, "packaging": null, "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRPxOJTrbiGc1dr89cBW0nXpd0qdgR0w-1kLoQkLmqkWQ&s=10"}, {"id": 25, "name": "مينتوس لواكر", "box_price": null, "carton_price": null, "packaging": null, "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSy6tS8vaSrlosZYjruuRnzY09xe2eWlh9inSMcVXy65Q&s=10"}, {"id": 27, "name": "بيض بلاستيك", "box_price": 5.0, "carton_price": null, "packaging": "24", "image_url": "https://neocart.ae/cdn/shop/products/Kingegg-01_600x.jpg?v=1676436574"}, {"id": 28, "name": "بيض ديناصور", "box_price": 5.0, "carton_price": null, "packaging": "24", "image_url": "https://f.nooncdn.com/p/v1558702227/N26097731A_1.jpg?width=800"}, {"id": 29, "name": "بيض اللابوبو", "box_price": 5.0, "carton_price": null, "packaging": null, "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS9nF_9gR4kKQi-v5IKZOjeWQ306myBqI5EYdGzP3DWRzkxmnGZGU5E7fk&s=10"}, {"id": 30, "name": "بيض ماستر ترند", "box_price": 5.0, "carton_price": null, "packaging": "24", "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTeZnkSQobbskevSGPmXPGPVAX55q1stm-ZZhA4iDlchg&s"}, {"id": 31, "name": "العاب هدايا حبات النص", "box_price": 10.0, "carton_price": null, "packaging": null, "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTkm754peNfKoGAcgQHaP4Ww_G2dGJl-6azbix0QOmR_g&s=10"}, {"id": 32, "name": "العاب هدايا حبات الدينار", "box_price": 10.0, "carton_price": null, "packaging": null, "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTkm754peNfKoGAcgQHaP4Ww_G2dGJl-6azbix0QOmR_g&s=10"}, {"id": 33, "name": "البينا لواكر", "box_price": 7.0, "carton_price": null, "packaging": null, "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRWjJTFofH7_oDKRFM5a_NLwj0HNtgS3aSi_Nx5zkl5_YC4D5PQrT1GUlc1&s=10"}, {"id": 34, "name": "جميع أنواع الحمضيات حبات الدينار", "box_price": 9.5, "carton_price": null, "packaging": null, "image_url": "nan"}, {"id": 35, "name": "مالتيزر ارنب", "box_price": 15.6, "carton_price": null, "packaging": null, "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTV2kU4y_a_9_T1DwsfAnuLURis0I7sSKZQHyymwv4RoA&s=10"}, {"id": 36, "name": "مالتيزر بار", "box_price": 18.0, "carton_price": null, "packaging": null, "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSY4kqZOjDoJq2hLEJTEqLjkEKPywSqJZBbq_TMUXbXtA&s"}, {"id": 39, "name": "ترمس", "box_price": null, "carton_price": 10.0, "packaging": "10", "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ-HK8v3kC_ktcS3CjyuFTEjChT2syTUxzS2tped9lKow&s=10"}, {"id": 40, "name": "ميلكا الواح", "box_price": 0.85, "carton_price": null, "packaging": null, "image_url": "https://bazar-center.com/249356-large_default/%D9%85%D9%84%D9%83%D8%A7_%D8%A7%D9%84%D9%88%D8%A7%D8%AD_%D8%B4%D9%88%D9%83%D9%88%D9%84%D8%A7%D8%AA%D9%87_%D8%A8%D8%A7%D9%84%D8%AD%D9%84%D9%8A%D8%A8_%D9%85%D8%B9_%D8%A7%D9%84%D8%B2%D8%A8%D9%8A%D8%A8__100_%D8%BA%D9%85__22.jpg"}, {"id": 42, "name": "شوكو برنس", "box_price": 11.25, "carton_price": null, "packaging": "40", "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRRdHvp28HfNbb8VuyeQOjzy3nNslH-fn0LUyA5bsDTwA&s=10"}, {"id": 43, "name": "فليك", "box_price": 7.75, "carton_price": null, "packaging": "36", "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQEFCq457VBPrpsgZZkhBgLa51VIZcUgklUrz2Cq4it8w&s"}, {"id": 44, "name": "بابلي", "box_price": 3.25, "carton_price": null, "packaging": "12", "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ1rpnv5NC8sqcWfKwe5jsdJJLspVYuOPzCDg_F5TSjtA&s=10"}, {"id": 45, "name": "سنكرز", "box_price": 4.3, "carton_price": null, "packaging": "10 حبات", "image_url": "https://cdn.salla.sa/AzAbWD/a71f4fd0-c11f-4093-beff-dfb4d2b010b3-1000x1000-VIpjmKKVZKKHo2Jyo8eYWVJpLBTbUXOdQ4SuDD8X.jpg"}, {"id": 47, "name": "M&M بني", "box_price": 13.25, "carton_price": null, "packaging": "24", "image_url": "https://www.broadwaycandy.com/cdn/shop/files/s-l1200.jpg?v=1724844285"}, {"id": 48, "name": "بي ردي نوتلا", "box_price": null, "carton_price": null, "packaging": null, "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbbGa4Oh9oO3pTmbE5ETll921nZDA5oK_tXCxLJhT-tQ&s=10"}, {"id": 49, "name": "فريرو روشيه", "box_price": null, "carton_price": null, "packaging": null, "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQLX_TmYsHxOEjzUizvVIy3oV82O9uvF_3_ouCpPO2x-Q&s=10"}];
-        let cart = {};
+<!-- Bottom Cart Bar -->
+<div class="cart-bar" id="cartBar">
+<div class="cart-bar-top">
+<span class="cart-bar-info" id="cartInfo">0 منتج</span>
+<span class="cart-bar-total" id="cartTotal">0 د.أ</span>
+</div>
+<div class="cart-bar-btns">
+<button class="btn-edit" onclick="openEditModal()">📝 تعديل الطلبية</button>
+<button class="btn-send" onclick="openCheckout()">📱 إرسال واتساب</button>
+</div>
+</div>
 
-        // Create floating candy particles
-        function createParticles() {
-            const container = document.getElementById('particles');
-            const candies = ['🍬','🍫','🍭','🍪','🍩','🧁','🍡','🍮'];
-            for (let i = 0; i < 25; i++) {
-                const p = document.createElement('div');
-                p.className = 'particle';
-                p.textContent = candies[Math.floor(Math.random() * candies.length)];
-                p.style.left = Math.random() * 100 + '%';
-                p.style.animationDuration = (Math.random() * 10 + 8) + 's';
-                p.style.animationDelay = (Math.random() * 10) + 's';
-                p.style.fontSize = (Math.random() * 15 + 12) + 'px';
-                container.appendChild(p);
-            }
+<!-- Edit Modal -->
+<div class="modal-overlay" id="editOverlay" onclick="closeEditModal()"></div>
+<div class="edit-modal" id="editModal">
+<h3>🛒 تعديل الطلبية</h3>
+<div id="editList"></div>
+<button class="edit-close" onclick="closeEditModal()">إغلاق</button>
+</div>
+
+<!-- Checkout Form -->
+<div class="form-overlay" id="formOverlay" onclick="closeCheckout()">
+<div class="form-box" onclick="event.stopPropagation()">
+<h3>📝 إتمام الطلبية</h3>
+<div class="form-group">
+<label>الاسم الكامل *</label>
+<input type="text" id="inName" placeholder="اسمك الكامل">
+</div>
+<div class="form-group">
+<label>رقم الهاتف * (يبدأ بـ 07)</label>
+<input type="tel" id="inPhone" placeholder="07xxxxxxxx" maxlength="10">
+</div>
+<div class="form-group">
+<label>المحافظة *</label>
+<select id="inCity">
+<option value="">اختر المحافظة</option>
+<option value="عمان">عمان</option>
+<option value="الزرقاء">الزرقاء</option>
+<option value="إربد">إربد</option>
+<option value="الشمال">الشمال</option>
+<option value="الجنوب">الجنوب</option>
+<option value="الكرك">الكرك</option>
+<option value="مادبا">مادبا</option>
+<option value="جرش">جرش</option>
+<option value="عجلون">عجلون</option>
+<option value="معان">معان</option>
+<option value="الطفيلة">الطفيلة</option>
+<option value="السلط">السلط</option>
+<option value="أخرى">أخرى</option>
+</select>
+</div>
+<div class="form-group">
+<label>العنوان بالتفصيل *</label>
+<textarea id="inAddr" placeholder="المنطقة، الشارع، أقرب معلم..."></textarea>
+</div>
+<div class="form-summary">
+<h4>📋 ملخص الطلبية</h4>
+<div id="formItems"></div>
+<div class="st"><span>الإجمالي</span><span id="formTotal">0 د.أ</span></div>
+</div>
+<div class="form-btns">
+<button class="btn-cancel" onclick="closeCheckout()">إلغاء</button>
+<button class="btn-confirm" onclick="sendOrder()">📱 إرسال الطلبية</button>
+</div>
+</div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Footer -->
+<div class="footer">
+<div class="social">
+<a href="https://web.facebook.com/profile.php?id=61580014494849&locale=ar_AR" target="_blank"><i class="fab fa-facebook-f"></i></a>
+<a href="https://wa.me/962781144716" target="_blank"><i class="fab fa-whatsapp"></i></a>
+<a href="tel:+962781144716"><i class="fas fa-phone"></i></a>
+</div>
+<div>جميع الحقوق محفوظة © 2026</div>
+<div class="copy">WRAP OFFER - بشير أبو عمر & زيد اليازوري</div>
+<div style="margin-top:8px;color:#888;font-size:0.65rem;">
+<i class="fas fa-clock"></i> السبت - الخميس: 8ص - 8م | <span style="color:#e74c3c;">الجمعة: عطلة</span>
+</div>
+</div>
+
+<script>
+// Product data
+var PRODUCTS = [{"id": 0, "name": "باونتي", "box_price": 11.5, "carton_price": null, "packaging": "24", "image_url": "https://albadeel.org/wp-content/uploads/2023/11/%D8%A8%D8%A7%D9%88%D9%86%D8%AA%D9%8A-Bounty.webp"}, {"id": 1, "name": "كيندر بوينو", "box_price": 17.5, "carton_price": null, "packaging": "30", "image_url": "https://www.kinder.com/ma/sites/kinder_ma/files/2025-12/bueno-t2.png?t=1781102821"}, {"id": 2, "name": "كيندر ماكس", "box_price": 7.75, "carton_price": null, "packaging": "36", "image_url": "https://bazar-center.com/249600-large_default/%D9%83%D9%86%D8%AF%D8%B1_%D9%85%D8%A7%D9%83%D8%B3_%D8%A7%D8%B5%D8%A7%D8%A8%D8%B9_%D8%B4%D9%88%D9%83%D9%88%D9%84%D8%A7%D8%AA%D9%87_21_%D8%BA%D9%85__36.jpg"}, {"id": 3, "name": "كندر t8", "box_price": null, "carton_price": null, "packaging": null, "image_url": "https://m.media-amazon.com/images/I/71jGx0kh+aL._AC_UF894,1000_QL80_.jpg"}, {"id": 4, "name": "كيتكات 2 اصبع", "box_price": 2.75, "carton_price": 33.0, "packaging": "10", "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS5VBPAdtWMy6607BsiqS3b1RwWXy8sXqeWFtO33VHgug&s"}, {"id": 5, "name": "تويرل", "box_price": 36.0, "carton_price": 36.0, "packaging": "48", "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2L445KEbiXdQEN5fVesYqMUxyLoVseyMXDVM6y1p7i3V0HAtEbeisSFE&s=10"}, {"id": 6, "name": "ملتيزر", "box_price": 16.0, "carton_price": null, "packaging": "25", "image_url": "https://img.ananinja.com/media/ninja-catalog-42/Banmaly/5000159020312_1.png?w=3840&q=75"}, {"id": 7, "name": "M&M صفر", "box_price": 13.25, "carton_price": null, "packaging": "24", "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtf-Ztarm2d28k5CgGpHKNFdD8Xkq7_9WTU61SEQUc8w&s=10"}, {"id": 8, "name": "LAION CHOCLET", "box_price": 18.0, "carton_price": null, "packaging": "40", "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR7x1OOrQX6UfMVe5DsBiAmskjQCRhbeHMp4884Hzac7Q&s=10"}, {"id": 9, "name": "بوظة اوزمو", "box_price": 7.0, "carton_price": 42.0, "packaging": "24", "image_url": "https://images.deliveryhero.io/image/darkstores/nv-global-catalog/jo/a3bbfeef-759e-4dd4-95bd-e539c246c83d.JPG"}, {"id": 10, "name": "سيليبريشن", "box_price": 6.5, "carton_price": 65.0, "packaging": "10", "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjEeHaIO8UfQN1V2Yu2v1IyrTif0pffr-AVlGJSTa_Cb-nPsI6EuFhD1s&s=10"}, {"id": 11, "name": "بديل الكندر بوينو", "box_price": 5.5, "carton_price": 33.0, "packaging": "24", "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSbgVUPVjPzjFk27IEUnxd2t2bgXRCVUEfLYYv-NJ4KAw&s"}, {"id": 12, "name": "بديل الباونتي", "box_price": 6.0, "carton_price": 36.0, "packaging": "24", "image_url": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQY0kbq_DdAI9tR1dhiN0WZiJE9Pb0pP-lCyzxuk7166Jl6d1PI"}, {"id": 13, "name": "بركات ليل", "box_price": 2.75, "carton_price": 33.0, "packaging": "12", "image_url": "https://media.zid.store/thumbs/48e9fdba-af4f-440b-95a2-e566d61d5ac2/d7472c78-bf53-4e76-8691-dc839d75b281-thumbnail-500x500.PNG"}, {"id": 14, "name": "بركات دوبينجو", "box_price": 2.75, "carton_price": 33.0, "packaging": "12", "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSoSmuq8OuWJNF9Gc8WFY8ek-GkzJqVJ1idxXBuRirWhA&s=10"}, {"id": 15, "name": "بركات كاجي", "box_price": 6.5, "carton_price": 37.0, "packaging": "24", "image_url": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRwTt_Q7wmILrIYPbRo4EHLczhrlSnhbYh5w1EgTUsNxMP_968e"}, {"id": 16, "name": "مارشميلو حلا", "box_price": 0.85, "carton_price": 10.2, "packaging": "12", "image_url": "https://cdn.salla.sa/BrBYGy/cf8ce423-4070-42d4-834f-88db1e9ee45a-746.66666666667x1000-fDThi4p1Asce0pTQ0d7GhKCheZ8GJFct7RCW4FKf.png"}, {"id": 17, "name": "مشروب غازي ZERO", "box_price": 0.75, "carton_price": 18.0, "packaging": "24", "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQ0WDqt4VJaScz3bF18UugkmgXg214H8gNuq4sEeQlKFT-ajzUvRcQmrU&s=10"}, {"id": 18, "name": "مشروب طاقة SURGE", "box_price": 5.5, "carton_price": null, "packaging": "24", "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRj0XcqeA1A6RdApI69Rnp2ZieqJWjj77_7osudSqPKJQ&s=10"}, {"id": 19, "name": "مشروب طاقة فريجو", "box_price": 7.0, "carton_price": null, "packaging": "24", "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS9pIOKjufPCnDRlLR8MfPj6bRbGVGMpBIKXcaGGyOctQ&s=10"}, {"id": 20, "name": "بانينو حلل", "box_price": null, "carton_price": 28.5, "packaging": "6 كيلو", "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQDxpu7FXIzb3spHj2mGV8sieEKuANiMDDmNxfx1i0xBCpBCE3gb8AL2So&s=10"}, {"id": 21, "name": "بانينو سوجار", "box_price": 5.5, "carton_price": 33.0, "packaging": "24", "image_url": "رhttps://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTN-CW4rdupFEHwOVbePXCSmZA6yqsKxKC8PjvTPPMHXUUDwuGAmDPL3LKS&s=10"}, {"id": 22, "name": "اندومي كوري", "box_price": 0.45, "carton_price": 18.0, "packaging": "40", "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR1dpelgp5qq7kkbh2Vd-jnh26lot83B9uhNBE0ZNoUqQ&s=10"}, {"id": 23, "name": "ميني شورز مارس و سنكرز", "box_price": null, "carton_price": 85.0, "packaging": "10 كيلو", "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRt1FXQ2RlKn0MAyOECy6T8GugpELG7QEQfS_RtJD-7zQ&s=10"}, {"id": 24, "name": "علكة لواكر", "box_price": 0.31, "carton_price": null, "packaging": null, "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRPxOJTrbiGc1dr89cBW0nXpd0qdgR0w-1kLoQkLmqkWQ&s=10"}, {"id": 25, "name": "مينتوس لواكر", "box_price": null, "carton_price": null, "packaging": null, "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSy6tS8vaSrlosZYjruuRnzY09xe2eWlh9inSMcVXy65Q&s=10"}, {"id": 26, "name": "بيض بلاستيك", "box_price": 5.0, "carton_price": null, "packaging": "24", "image_url": "https://neocart.ae/cdn/shop/products/Kingegg-01_600x.jpg?v=1676436574"}, {"id": 27, "name": "بيض ديناصور", "box_price": 5.0, "carton_price": null, "packaging": "24", "image_url": "https://f.nooncdn.com/p/v1558702227/N26097731A_1.jpg?width=800"}, {"id": 28, "name": "بيض اللابوبو", "box_price": 5.0, "carton_price": null, "packaging": null, "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS9nF_9gR4kKQi-v5IKZOjeWQ306myBqI5EYdGzP3DWRzkxmnGZGU5E7fk&s=10"}, {"id": 29, "name": "بيض ماستر ترند", "box_price": 5.0, "carton_price": null, "packaging": "24", "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTeZnkSQobbskevSGPmXPGPVAX55q1stm-ZZhA4iDlchg&s"}, {"id": 30, "name": "العاب هدايا حبات النص", "box_price": 10.0, "carton_price": null, "packaging": null, "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTkm754peNfKoGAcgQHaP4Ww_G2dGJl-6azbix0QOmR_g&s=10"}, {"id": 31, "name": "العاب هدايا حبات الدينار", "box_price": 10.0, "carton_price": null, "packaging": null, "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTkm754peNfKoGAcgQHaP4Ww_G2dGJl-6azbix0QOmR_g&s=10"}, {"id": 32, "name": "البينا لواكر", "box_price": 7.0, "carton_price": null, "packaging": null, "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRWjJTFofH7_oDKRFM5a_NLwj0HNtgS3aSi_Nx5zkl5_YC4D5PQrT1GUlc1&s=10"}, {"id": 33, "name": "جميع أنواع الحمضيات حبات الدينار", "box_price": 9.5, "carton_price": null, "packaging": null, "image_url": "nan"}, {"id": 34, "name": "مالتيزر ارنب", "box_price": 15.6, "carton_price": null, "packaging": null, "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTV2kU4y_a_9_T1DwsfAnuLURis0I7sSKZQHyymwv4RoA&s=10"}, {"id": 35, "name": "مالتيزر بار", "box_price": 18.0, "carton_price": null, "packaging": null, "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSY4kqZOjDoJq2hLEJTEqLjkEKPywSqJZBbq_TMUXbXtA&s"}, {"id": 36, "name": "ترمس", "box_price": null, "carton_price": 10.0, "packaging": "10", "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ-HK8v3kC_ktcS3CjyuFTEjChT2syTUxzS2tped9lKow&s=10"}, {"id": 37, "name": "ميلكا الواح", "box_price": 0.85, "carton_price": null, "packaging": null, "image_url": "https://bazar-center.com/249356-large_default/%D9%85%D9%84%D9%83%D8%A7_%D8%A7%D9%84%D9%88%D8%A7%D8%AD_%D8%B4%D9%88%D9%83%D9%88%D9%84%D8%A7%D8%AA%D9%87_%D8%A8%D8%A7%D9%84%D8%AD%D9%84%D9%8A%D8%A8_%D9%85%D8%B9_%D8%A7%D9%84%D8%B2%D8%A8%D9%8A%D8%A8__100_%D8%BA%D9%85__22.jpg"}, {"id": 38, "name": "شوكو برنس", "box_price": 11.25, "carton_price": null, "packaging": "40", "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRRdHvp28HfNbb8VuyeQOjzy3nNslH-fn0LUyA5bsDTwA&s=10"}, {"id": 39, "name": "فليك", "box_price": 7.75, "carton_price": null, "packaging": "36", "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQEFCq457VBPrpsgZZkhBgLa51VIZcUgklUrz2Cq4it8w&s"}, {"id": 40, "name": "بابلي", "box_price": 3.25, "carton_price": null, "packaging": "12", "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ1rpnv5NC8sqcWfKwe5jsdJJLspVYuOPzCDg_F5TSjtA&s=10"}, {"id": 41, "name": "سنكرز", "box_price": 4.3, "carton_price": null, "packaging": "10 حبات", "image_url": "https://cdn.salla.sa/AzAbWD/a71f4fd0-c11f-4093-beff-dfb4d2b010b3-1000x1000-VIpjmKKVZKKHo2Jyo8eYWVJpLBTbUXOdQ4SuDD8X.jpg"}, {"id": 42, "name": "M&M بني", "box_price": 13.25, "carton_price": null, "packaging": "24", "image_url": "https://www.broadwaycandy.com/cdn/shop/files/s-l1200.jpg?v=1724844285"}, {"id": 43, "name": "بي ردي نوتلا", "box_price": null, "carton_price": null, "packaging": null, "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbbGa4Oh9oO3pTmbE5ETll921nZDA5oK_tXCxLJhT-tQ&s=10"}, {"id": 44, "name": "فريرو روشيه", "box_price": null, "carton_price": null, "packaging": null, "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQLX_TmYsHxOEjzUizvVIy3oV82O9uvF_3_ouCpPO2x-Q&s=10"}];
+var cart = {};
+
+// ===== QUANTITY BUTTONS =====
+function changeQty(id, delta) {
+    var el = document.getElementById('qty_' + id);
+    if (!el) return;
+    var v = parseInt(el.textContent || '0') + delta;
+    if (v < 0) v = 0;
+    el.textContent = v;
+}
+
+// ===== ADD TO CART =====
+function addCart(id) {
+    var qtyEl = document.getElementById('qty_' + id);
+    if (!qtyEl) return;
+    var qty = parseInt(qtyEl.textContent || '0');
+    if (qty <= 0) {
+        showToast('اختر الكمية أولاً');
+        return;
+    }
+    var p = null;
+    for (var i = 0; i < PRODUCTS.length; i++) {
+        if (PRODUCTS[i].id === id) { p = PRODUCTS[i]; break; }
+    }
+    if (!p) return;
+    cart[id] = {
+        id: p.id,
+        name: p.name,
+        box_price: p.box_price,
+        carton_price: p.carton_price,
+        image_url: p.image_url,
+        qty: qty
+    };
+    var btn = document.getElementById('btn_' + id);
+    if (btn) {
+        btn.classList.add('added');
+        btn.innerHTML = '<i class="fas fa-check"></i> تم';
+        setTimeout(function() {
+            btn.classList.remove('added');
+            btn.innerHTML = '<i class="fas fa-plus"></i> إضافة';
+        }, 1200);
+    }
+    updateCartBar();
+    showToast('تمت إضافة ' + p.name);
+}
+
+// ===== UPDATE CART BAR =====
+function updateCartBar() {
+    var items = [];
+    for (var k in cart) {
+        if (cart.hasOwnProperty(k)) items.push(cart[k]);
+    }
+    var bar = document.getElementById('cartBar');
+    if (items.length === 0) {
+        bar.classList.remove('show');
+        return;
+    }
+    bar.classList.add('show');
+    var total = 0, count = 0;
+    for (var i = 0; i < items.length; i++) {
+        var price = items[i].box_price || items[i].carton_price || 0;
+        total += price * items[i].qty;
+        count += items[i].qty;
+    }
+    document.getElementById('cartInfo').textContent = count + ' منتج';
+    document.getElementById('cartTotal').textContent = total.toFixed(2) + ' د.أ';
+    document.getElementById('badge').textContent = count;
+}
+
+// ===== EDIT MODAL =====
+function openEditModal() {
+    var items = [];
+    for (var k in cart) {
+        if (cart.hasOwnProperty(k)) items.push(cart[k]);
+    }
+    if (items.length === 0) {
+        showToast('السلة فارغة');
+        return;
+    }
+    var list = document.getElementById('editList');
+    var html = '';
+    for (var i = 0; i < items.length; i++) {
+        var it = items[i];
+        var price = it.box_price || it.carton_price || 0;
+        html += '<div class="edit-item">' +
+            '<img src="' + it.image_url + '" onerror="this.src=\'https://via.placeholder.com/45/FFD700/333?text=%F0%9F%8D%AC\'">' +
+            '<div class="edit-item-info"><div class="n">' + it.name + '</div><div class="p">' + price + ' د.أ</div></div>' +
+            '<div class="edit-item-qty">' +
+            '<button onclick="editCartQty(' + it.id + ',-1)">−</button>' +
+            '<span>' + it.qty + '</span>' +
+            '<button onclick="editCartQty(' + it.id + ',1)">+</button>' +
+            '</div>' +
+            '<i class="fas fa-trash del" onclick="removeCartItem(' + it.id + ')"></i>' +
+            '</div>';
+    }
+    list.innerHTML = html;
+    document.getElementById('editOverlay').classList.add('show');
+    document.getElementById('editModal').classList.add('open');
+}
+
+function closeEditModal() {
+    document.getElementById('editOverlay').classList.remove('show');
+    document.getElementById('editModal').classList.remove('open');
+}
+
+function editCartQty(id, delta) {
+    if (!cart[id]) return;
+    cart[id].qty += delta;
+    if (cart[id].qty <= 0) {
+        delete cart[id];
+    }
+    var qel = document.getElementById('qty_' + id);
+    if (qel) qel.textContent = cart[id] ? cart[id].qty : 0;
+    updateCartBar();
+    openEditModal();
+}
+
+function removeCartItem(id) {
+    delete cart[id];
+    var qel = document.getElementById('qty_' + id);
+    if (qel) qel.textContent = '0';
+    updateCartBar();
+    var keys = [];
+    for (var k in cart) { if (cart.hasOwnProperty(k)) keys.push(k); }
+    if (keys.length > 0) {
+        openEditModal();
+    } else {
+        closeEditModal();
+    }
+}
+
+// ===== CHECKOUT FORM =====
+function openCheckout() {
+    var items = [];
+    for (var k in cart) {
+        if (cart.hasOwnProperty(k)) items.push(cart[k]);
+    }
+    if (items.length === 0) {
+        showToast('السلة فارغة');
+        return;
+    }
+    var total = 0;
+    var html = '';
+    for (var i = 0; i < items.length; i++) {
+        var it = items[i];
+        var price = it.box_price || it.carton_price || 0;
+        var t = price * it.qty;
+        total += t;
+        html += '<div class="si"><span>' + it.name + ' × ' + it.qty + '</span><span>' + t.toFixed(2) + ' د.أ</span></div>';
+    }
+    document.getElementById('formItems').innerHTML = html;
+    document.getElementById('formTotal').textContent = total.toFixed(2) + ' د.أ';
+    document.getElementById('formOverlay').classList.add('show');
+}
+
+function closeCheckout() {
+    document.getElementById('formOverlay').classList.remove('show');
+}
+
+function sendOrder() {
+    var name = document.getElementById('inName').value.trim();
+    var phone = document.getElementById('inPhone').value.trim();
+    var city = document.getElementById('inCity').value;
+    var addr = document.getElementById('inAddr').value.trim();
+    if (!name || !phone || !city || !addr) {
+        showToast('املأ جميع الحقول المطلوبة');
+        return;
+    }
+    if (!phone.startsWith('07') || phone.length !== 10) {
+        showToast('رقم الهاتف يجب أن يبدأ بـ 07 ويتكون من 10 أرقام');
+        return;
+    }
+    var items = [];
+    for (var k in cart) {
+        if (cart.hasOwnProperty(k)) items.push(cart[k]);
+    }
+    var total = 0;
+    var msg = '*طلبية جديدة من WRAP OFFER*\n\n';
+    msg += '*العميل:* ' + name + '\n';
+    msg += '*الهاتف:* ' + phone + '\n';
+    msg += '*المحافظة:* ' + city + '\n';
+    msg += '*العنوان:* ' + addr + '\n\n';
+    msg += '*الأصناف المطلوبة:*\n';
+    for (var i = 0; i < items.length; i++) {
+        var it = items[i];
+        var price = it.box_price || it.carton_price || 0;
+        var t = price * it.qty;
+        total += t;
+        msg += (i + 1) + '. ' + it.name + ' - الكمية: ' + it.qty + ' - السعر: ' + t.toFixed(2) + ' د.أ\n';
+    }
+    msg += '\n*الإجمالي الكلي: ' + total.toFixed(2) + ' دينار أردني*';
+    window.open('https://wa.me/962781144716?text=' + encodeURIComponent(msg), '_blank');
+    cart = {};
+    var allQtys = document.querySelectorAll('.qty-num');
+    for (var i = 0; i < allQtys.length; i++) {
+        allQtys[i].textContent = '0';
+    }
+    updateCartBar();
+    closeCheckout();
+    showToast('تم فتح واتساب لإرسال الطلبية');
+}
+
+// ===== TOAST =====
+function showToast(message) {
+    var t = document.getElementById('toast');
+    t.textContent = message;
+    t.classList.add('show');
+    setTimeout(function() {
+        t.classList.remove('show');
+    }, 2500);
+}
+
+// ===== COUNTER ANIMATION (Pure JS, no GSAP) =====
+function animateCounter(elementId, target, suffix, durationMs) {
+    var el = document.getElementById(elementId);
+    if (!el) return;
+    var start = 0;
+    var startTime = null;
+    function step(timestamp) {
+        if (!startTime) startTime = timestamp;
+        var progress = (timestamp - startTime) / durationMs;
+        if (progress > 1) progress = 1;
+        var easeProgress = 1 - Math.pow(1 - progress, 3);
+        var current = Math.floor(start + (target - start) * easeProgress);
+        el.textContent = current + suffix;
+        if (progress < 1) {
+            requestAnimationFrame(step);
+        } else {
+            el.textContent = target + suffix;
         }
-        createParticles();
+    }
+    requestAnimationFrame(step);
+}
 
-        // Update quantity display
-        function updateQty(productId, change) {
-            const display = document.getElementById('qty-' + productId);
-            let val = parseInt(display.textContent) + change;
-            if (val < 0) val = 0;
-            display.textContent = val;
-        }
-
-        // Add to cart
-        function addToCart(productId) {
-            const qty = parseInt(document.getElementById('qty-' + productId).textContent);
-            if (qty <= 0) {
-                showToast('❌ اختر الكمية أولاً!');
-                return;
-            }
-            const product = products.find(p => p.id === productId);
-            if (!product) return;
-
-            const btn = document.getElementById('btn-' + productId);
-            btn.classList.add('added');
-            btn.innerHTML = '<i class="fas fa-check"></i> تمت الإضافة';
-            setTimeout(() => {
-                btn.classList.remove('added');
-                btn.innerHTML = '<i class="fas fa-cart-plus"></i> أضف إلى السلة';
-            }, 1500);
-
-            cart[productId] = { ...product, quantity: qty };
-            updateCartUI();
-            showToast('✅ تمت إضافة ' + product.name + ' إلى السلة!');
-        }
-
-        // Update cart UI
-        function updateCartUI() {
-            const cartItems = document.getElementById('cartItems');
-            const cartCount = document.getElementById('cartCount');
-            const cartTotal = document.getElementById('cartTotal');
-
-            const items = Object.values(cart);
-            let totalItems = 0;
-            let totalPrice = 0;
-
-            if (items.length === 0) {
-                cartItems.innerHTML = '<div class="empty-cart-msg"><i class="fas fa-shopping-basket"></i><p>سلة المشتريات فارغة</p></div>';
-            } else {
-                cartItems.innerHTML = items.map(item => {
-                    const price = item.box_price || item.carton_price || 0;
-                    const itemTotal = price * item.quantity;
-                    totalItems += item.quantity;
-                    totalPrice += itemTotal;
-                    return `
-                        <div class="cart-item">
-                            <img src="${item.image_url}" alt="${item.name}" onerror="this.src='https://via.placeholder.com/55/FFD700/333?text=🍬'">
-                            <div class="cart-item-info">
-                                <div class="cart-item-name">${item.name}</div>
-                                <div class="cart-item-price">${price} دينار × ${item.quantity} = ${itemTotal.toFixed(2)} دينار</div>
-                            </div>
-                            <div class="cart-item-qty">
-                                <button onclick="changeCartQty(${item.id}, -1)">−</button>
-                                <span>${item.quantity}</span>
-                                <button onclick="changeCartQty(${item.id}, 1)">+</button>
-                            </div>
-                            <i class="fas fa-trash remove-item" onclick="removeFromCart(${item.id})"></i>
-                        </div>
-                    `;
-                }).join('');
-            }
-
-            cartCount.textContent = totalItems;
-            cartTotal.textContent = totalPrice.toFixed(2) + ' دينار';
-        }
-
-        function changeCartQty(productId, change) {
-            if (cart[productId]) {
-                cart[productId].quantity += change;
-                if (cart[productId].quantity <= 0) delete cart[productId];
-                document.getElementById('qty-' + productId).textContent = cart[productId] ? cart[productId].quantity : 0;
-                updateCartUI();
-            }
-        }
-
-        function removeFromCart(productId) {
-            delete cart[productId];
-            document.getElementById('qty-' + productId).textContent = '0';
-            updateCartUI();
-            showToast('🗑️ تم الحذف من السلة');
-        }
-
-        function toggleCart() {
-            document.getElementById('cartSidebar').classList.toggle('open');
-            document.getElementById('overlay').classList.toggle('active');
-        }
-
-        function openCheckout() {
-            const items = Object.values(cart);
-            if (items.length === 0) {
-                showToast('❌ السلة فارغة! أضف منتجات أولاً');
-                return;
-            }
-
-            const summaryItems = document.getElementById('orderSummaryItems');
-            let total = 0;
-            summaryItems.innerHTML = items.map(item => {
-                const price = item.box_price || item.carton_price || 0;
-                const itemTotal = price * item.quantity;
-                total += itemTotal;
-                return `<div class="summary-item"><span>${item.name} × ${item.quantity}</span><span>${itemTotal.toFixed(2)} د.أ</span></div>`;
-            }).join('');
-
-            document.getElementById('orderSummaryTotal').textContent = total.toFixed(2) + ' دينار';
-            document.getElementById('checkoutModal').classList.add('open');
-            document.getElementById('checkoutOverlay').classList.add('active');
-            toggleCart();
-        }
-
-        function closeCheckout() {
-            document.getElementById('checkoutModal').classList.remove('open');
-            document.getElementById('checkoutOverlay').classList.remove('active');
-        }
-
-        function submitOrder(e) {
-            e.preventDefault();
-
-            const name = document.getElementById('customerName').value.trim();
-            const phone = document.getElementById('customerPhone').value.trim();
-            const city = document.getElementById('customerCity').value;
-            const address = document.getElementById('customerAddress').value.trim();
-
-            if (!name || !phone || !city || !address) {
-                showToast('❌ يرجى ملء جميع الحقول المطلوبة');
-                return;
-            }
-
-            if (!phone.startsWith('07') || phone.length !== 10) {
-                showToast('❌ رقم الهاتف يجب أن يبدأ بـ 07 ويتكون من 10 أرقام');
-                return;
-            }
-
-            const items = Object.values(cart);
-            let total = 0;
-            let message = '*🛒 طلبية جديدة من WRAP OFFER*\n\n';
-            message += '*👤 معلومات العميل:*\n';
-            message += 'الاسم: ' + name + '\n';
-            message += 'الهاتف: ' + phone + '\n';
-            message += 'المحافظة: ' + city + '\n';
-            message += 'العنوان: ' + address + '\n\n';
-            message += '*📦 الأصناف المطلوبة:*\n';
-
-            items.forEach((item, i) => {
-                const price = item.box_price || item.carton_price || 0;
-                const itemTotal = price * item.quantity;
-                total += itemTotal;
-                message += (i+1) + '. ' + item.name + ' - الكمية: ' + item.quantity + ' - السعر: ' + itemTotal.toFixed(2) + ' د.أ\n';
-            });
-
-            message += '\n*💰 الإجمالي الكلي: ' + total.toFixed(2) + ' دينار أردني*';
-            message += '\n\n_تم إرسال الطلبية من موقع WRAP OFFER_';
-
-            const waUrl = 'https://wa.me/962781144716?text=' + encodeURIComponent(message);
-            window.open(waUrl, '_blank');
-
-            // Clear cart
-            cart = {};
-            document.querySelectorAll('.qty-display').forEach(el => el.textContent = '0');
-            updateCartUI();
-            closeCheckout();
-            showToast('✅ تم فتح واتساب لإرسال الطلبية!');
-        }
-
-        function showToast(msg) {
-            const toast = document.getElementById('toast');
-            toast.textContent = msg;
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 3000);
-        }
-
-        // Animate fake counters
-        function animateCounters() {
-            const targets = { visitCount: 12847, clientCount: 300, orderCount: 5230 };
-            Object.keys(targets).forEach(id => {
-                const el = document.getElementById(id);
-                if (!el) return;
-                let current = 0;
-                const target = targets[id];
-                const increment = target / 80;
-                const timer = setInterval(() => {
-                    current += increment;
-                    if (current >= target) {
-                        current = target;
-                        clearInterval(timer);
-                    }
-                    if (id === 'clientCount') {
-                        el.textContent = Math.floor(current) + '+';
-                    } else {
-                        el.textContent = Math.floor(current).toLocaleString();
-                    }
-                }, 30);
-            });
-        }
-
-        // Fade in on scroll
-        function observeFadeIn() {
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('visible');
-                    }
-                });
-            }, { threshold: 0.1 });
-
-            document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
-        }
-
-        // Smooth scroll
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            });
-        });
-
-        // Init
-        window.addEventListener('load', () => {
-            setTimeout(animateCounters, 500);
-            observeFadeIn();
-        });
-    </script>
+// Start counters when page loads
+window.addEventListener('load', function() {
+    setTimeout(function() {
+        animateCounter('stat1', 12847, '', 2000);
+        animateCounter('stat2', 300, '+', 2000);
+        animateCounter('stat3', 5230, '', 2000);
+        animateCounter('stat4', 50, '+', 2000);
+    }, 500);
+});
+</script>
 </body>
 </html>
